@@ -12,31 +12,16 @@ import sys
 def filenameToModuleName(f):
     return os.path.splitext(f)[0]
 
-engine_dir = os.path.dirname(os.path.realpath(__file__))
+module_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'modules')
 # add search path
-if engine_dir not in sys.path:
-    sys.path.append(engine_dir)
+if module_dir not in sys.path:
+    sys.path.append(module_dir)
 
-try:
-    jibun = __import__('lyric_engine')
-    # test if load from zip (py2exe)
-    if hasattr(jibun, '__loader__'):
-        loader = jibun.__loader__
-        files = __import__('__init__').__loader__._files.keys()
-        test = re.compile('site_.*\.pyo$')
-    else:
-        files = os.listdir(engine_dir)
-        test = re.compile('site_.*\.py$')
-
-    files = [x for x in files if test.search(x)]
-    moduleNames = [filenameToModuleName(x) for x in files]
-    modules = [__import__(x) for x in moduleNames]
-except:
-    files = os.listdir(engine_dir)
-    test = re.compile('site_.*\.py$')
-    files = [x for x in files if test.search(x)]
-    moduleNames = [filenameToModuleName(x) for x in files]
-    modules = [__import__(x) for x in moduleNames]
+files = os.listdir(module_dir)
+test = re.compile('.*\.py$')
+files = [x for x in files if test.search(x)]
+moduleNames = [filenameToModuleName(x) for x in files]
+modules = [__import__(x) for x in moduleNames]
 
 site_dict = {}
 for module in modules:

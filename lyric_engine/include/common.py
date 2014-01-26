@@ -80,6 +80,9 @@ def unicode2string(input):
 def strip_tags(input):
     return re.sub('<[^>]+>', '', input)
 
+def strip_slashes(input):
+    return re.sub(r'\\(.)', r'\1', input)
+
 def get_first_group_by_pattern(input, pattern):
     output = ''
     logging.debug('pattern [%s]' % (pattern, ))
