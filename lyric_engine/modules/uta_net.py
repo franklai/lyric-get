@@ -1,8 +1,10 @@
 # coding: utf-8
-import logging
+import os
 import sys
-sys.path.append('../include')
+include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+sys.path.append(include_dir)
 
+import logging
 import common
 from lyric_base import LyricBase
 
