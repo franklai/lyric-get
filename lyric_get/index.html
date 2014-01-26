@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Lyric Get</title>
+<link rel="stylesheet" href="css/jquery-ui.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.7.1.custom.min.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+</head>
+<body>
+
+<div id="container">
+	<h1>Lyric Get</h1>
+
+	<div id="query_container">
+		Paste the URL of the lyric page here, and Click 'Fetch'.
+		<div class="hr"></div>
+		<form id="query_form">
+		<fieldset>
+			<input type="submit" id="btn_submit" class="submit" value="Fetch"/>
+			<input type="text" id="url" class="url" value="Paste URL HERE..." title="Paste URL HERE..."/>
+		</fieldset>
+		</form>
+	</div>
+
+	<div id="loading_div" class="ui-widget-content">
+	Loading...
+	</div>
+	
+	<div id="lyric_div" class="ui-widget-content" lang="ja">
+	<input type="button" id="select" value="Select Lyric"/>
+	<input type="button" id="copy" value="Copy Lyric (IE only)"/>
+	<div class="hr"></div>
+    <textarea lang="ja"></textarea>
+	</div>
+
+	<div id="tabs" class="ui-tabs">
+		<ul>
+			<li><a href="#examples"><span>Examples</span></a></li>
+			<li><a href="#sites"><span>Supported Sites</span></a></li>
+			<li><a href="#search"><span>Search</span></a></li>
+			<li><a href="#changelog"><span>Changelog</span></a></li>
+		</ul>
+
+		<div id="examples" class="ui-tabs-hide">
+		<dl>
+			<dt>うたまっぷ</dt>
+			<dd><a href="http://www.utamap.com/showkasi.php?surl=70380" target="_blank">http://www.utamap.com/showkasi.php?surl=70380</a></dd>
+			<dt>あにまっぷ</dt>
+			<dd><a href="http://www.animap.jp/kasi/showkasi.php?surl=dk101202_50" target="_blank">http://www.animap.jp/kasi/showkasi.php?surl=dk101202_50</a></dd>
+			<dt>Uta-Net</dt>
+			<dd><a href="http://www.uta-net.com/user/phplib/view_0.php?ID=17248" target="_blank">http://www.uta-net.com/user/phplib/view_0.php?ID=17248</a></dd>
+			<dt>歌詞タイム</dt>
+			<dd><a href="http://www.kasi-time.com/item-262.html" target="_blank">http://www.kasi-time.com/item-262.html</a></dd>
+			<dt>歌詞ナビ</dt>
+			<dd><a href="http://www.kashinavi.com/song_view.html?12462" target="_blank">http://www.kashinavi.com/song_view.html?12462</a></dd>
+			<dt>歌詞GET</dt>
+			<dd><a href="http://lyric.kget.jp/lyric/pt/jw/index.html" target="_blank">http://lyric.kget.jp/lyric/pt/jw/index.html</a></dd>
+			<dt>Yahoo!ミュージック - 歌詞</dt>
+			<dd><a href="http://music.yahoo.co.jp/lyrics/dtl/KAA013487/AAA108388/" target="_blank">http://music.yahoo.co.jp/lyrics/dtl/KAA013487/AAA108388/</a></dd>
+			<dt>イベスタ歌詞とる</dt>
+			<dd><a href="http://www.evesta.jp/lyric/artists/a10019/lyrics/l7811.html" target="_blank">http://www.evesta.jp/lyric/artists/a10019/lyrics/l7811.html</a></dd>
+			<dt>アニメソングの歌詞ならここにおまかせ？</dt>
+			<dd><a href="http://www.jtw.zaq.ne.jp/animesong/ra/rahxephontagen/tune.html" target="_blank">http://www.jtw.zaq.ne.jp/animesong/ra/rahxephontagen/tune.html</a></dd>
+			<dt>UtaTen</dt>
+			<dd><a href="http://utaten.com/lyric/jb50903142" target="_blank">http://utaten.com/lyric/jb50903142</a></dd>
+			<dt>JOYSOUND.com</dt>
+			<dd><a href="http://joysound.com/ex/search/karaoke/_selSongNo_28721_songwords.htm" target="_blank">http://joysound.com/ex/search/karaoke/_selSongNo_28721_songwords.htm</a></dd>
+			<dt>PetitLyrics</dt>
+			<dd><a href="http://petitlyrics.com/kashi/34690/" target="_blank">http://petitlyrics.com/kashi/34690/</a></dd>
+			<dt>@SOUND</dt>
+			<dd><a href="http://atsound.jp/a/lyrics/view.php?id=0000007250" target="_blank">http://atsound.jp/a/lyrics/view.php?id=0000007250</a></dd>
+			<dt>LyricWiki</dt>
+			<dd><a href="http://lyrics.wikia.com/Ronan_Keating:When_You_Say_Nothing_At_All" target="_blank">http://lyrics.wikia.com/Ronan_Keating:When_You_Say_Nothing_At_All</a></dd>
+			<dt>J-Total Music</dt>
+			<dd><a href="http://music.j-total.net/data/026ha/012_BUMP_OF_CHICKEN/014.html" target="_blank">http://music.j-total.net/data/026ha/012_BUMP_OF_CHICKEN/014.html</a></dd>
+			<dt>metrolyrics</dt>
+			<dd><a href="http://www.metrolyrics.com/we-belong-together-lyrics-mariah-carey.html" target="_blank">http://www.metrolyrics.com/we-belong-together-lyrics-mariah-carey.html</a></dd>
+			<dt>sing365.com</dt>
+			<dd><a href="http://www.sing365.com/music/lyric.nsf/We-Belong-Together-lyrics-Mariah-Carey/12371122B3C05FE948256FBE00285AEB" target="_blank">http://www.sing365.com/music/lyric.nsf/We-Belong-Together-lyrics-Mariah-Carey/12371122B3C05FE948256FBE00285AEB</a></dd>
+		</dl>
+		</div>
+
+		<div id="sites" class="ui-tabs-hide">
+			<ul lang="ja">
+				<li><a href="http://www.utamap.com/" target="_blank">うたまっぷ</a></li>
+				<li><a href="http://www.animap.jp/" target="_blank">あにまっぷ</a></li>
+				<li><a href="http://www.uta-net.com/" target="_blank">Uta-Net</a></li>
+				<li><a href="http://www.kashinavi.com/" target="_blank">歌詞ナビ</a></li>
+				<li><a href="http://www2.kget.jp/releasedate/" target="_blank">歌詞GET</a></li>
+				<li><a href="http://music.yahoo.co.jp/" target="_blank">Yahoo!ミュージック</a></li>
+				<li><a href="http://www.kasi-time.com/" target="_blank">歌詞タイム</a></li>
+				<li><a href="http://www.evesta.jp/lyric/" target="_blank">イベスタ歌詞とる</a></li>
+				<li><a href="http://www.jtw.zaq.ne.jp/animesong/" target="_blank">アニメソングの歌詞ならここにおまかせ？</a></li>
+				<li><a href="http://utaten.com/" target="_blank">UtaTen</a></li>
+				<li><a href="http://joysound.com/" target="_blank">JOYSOUND.com</a></li>
+				<li><a href="http://petitlyrics.com/" target="_blank">PetitLyrics</a></li>
+				<li><a href="http://atsound.jp/" target="_blank">@SOUND</a></li>
+				<li><a href="http://lyrics.wikia.com/" target="_blank">LyricWiki</a></li>
+				<li><a href="http://music.j-total.net/" target="_blank">J-Total Music</a></li>
+				<li><a href="http://www.metrolyrics.com/" target="_blank">metrolyrics</a></li>
+				<li><a href="http://www.sing365.com/" target="_blank">sing365.com</a></li>
+			</ul>
+		</div>
+		
+		<div id="search" class="ui-tabs-hide">
+			<form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+				<div>
+					<input type="hidden" name="cx" value="006376900438267952345:wtrpwi9euuq" />
+					<input type="hidden" name="ie" value="UTF-8" />
+					<input type="text" name="q" size="31" />
+					<input type="submit" name="sa" value="Search" />
+				</div>
+			</form>
+			<script type="text/javascript" src="http://www.google.com/cse/brand?form=cse-search-box&lang=en"></script>
+		</div>
+
+		<div id="changelog" class="ui-tabs-hide">
+		<ul>
+			<li>[2012 09-23]
+                <ol>
+                <li>Fix metrolyrics.</li>
+                <li>Fix sing365.</li>
+                </ol>
+            </li>
+			<li>[2012 03-13]
+				<ol>
+				<li>Fix atsound.jp.</li>
+				<li>Rename kashicomi to petitlyrics.</li>
+				</ol>
+			</li>
+			<li>[2012 01-28] Add atsound.jp support.</li>
+			<li>[2011 11-03] Fix Yahoo Music.</li>
+			<li>[2011 09-28] Fix kashicomi cannot get lyric (need Referer).</li>
+			<li>[2011 08-17] Add kashicomi.jp support.</li>
+			<li>[2011 03-07] Improve URL compatibility of joysound and Uta-Net</li>
+			<li>[2011 02-07] Add animap.jp support.</li>
+			<li>[2010 11-20] 
+				<ol>
+				<li>Add sing365.com support.</li>
+				<li>Add metrolyrics support.</li>
+				</ol>
+			</li>
+			<li>[2010 11-16] Fix lyricwiki cannot get lyric.</li>
+			<li>[2010 04-28]
+				<ol>
+				<li>Fix kashinavi cannot get lyric (swf changed).</li>
+				<li>Fix evesta cannot get lyric (html changed).</li>
+				</ol>
+			</li>
+			<li>[2010 03-20] Using external script to get Yahoo Music lyric.</li>
+			<li>[2010 03-11] Fix Uta-Net cannot get lyric. Yahoo Music has changed to use SilverLight, get lyric is possible, but not on Google App Engine, due to User-Agent issue.</li>
+			<li>[2010 03-04] Add J-Total support.</li>
+			<li>[2010 02-27] 
+				<ol>
+				<li>Fix lyricwiki cannot get lyric.</li>
+				<li>Fix utamap song info.</li>
+				<li>Remove anicashi due to site not available.</li>
+				</ol>
+			</li>
+			<li>[2009 11-20] Fix kashinavi cannot get lyric on Google App Engine.</li>
+			<li>[2009 10-06] Add LyricWiki support and Search ability.</li>
+			<li>[2009 08-23] joysound problem. use external script to get joysound lyric.</li>
+			<li>[2009 07-09] Change utaten example url and add current url format support.</li>
+			<li>[2009 07-08] Fix kashinavi cannot get lyric.</li>
+			<li>[2009 06-20] Fix evesta cannot get lyric, kashinavi shows artist none.</li>
+			<li>[2009 03-21] Lyric Get online!</li>
+		</ul>
+		</div>
+	</div>
+
+	<div id="footer">
+	<div class="hr"></div>
+    <div>
+    If you have problems to get lyric. Please report issue 
+    on <a href="http://code.google.com/p/py-lyric-retriever/issues/list" target="_blank">py-lyric-retriever Issue List</a>,
+    or contact <a href="http://franks543.blogspot.com/" target="_blank">franklai</a>.
+    </div>
+    <div>
+    如果出現無法取得歌詞的情況，
+    請回報至 <a href="http://code.google.com/p/py-lyric-retriever/issues/list" target="_blank">py-lyric-retriever Issue List</a>，
+    或者聯絡 <a href="http://franks543.blogspot.com/" target="_blank">franklai</a>。
+    </div>
+	</div>
+
+</div>
+<script src='http://www.google-analytics.com/ga.js' type='text/javascript'></script>
+<script type='text/javascript'>
+var pageTracker = _gat._getTracker("UA-879036-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+</body>
+</html>

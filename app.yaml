@@ -1,0 +1,24 @@
+application: franklai-lyric-get
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /
+  static_files: lyric_get/index.html 
+  upload: lyric_get/index.html
+- url: /js
+  static_dir: lyric_get/js
+- url: /css
+  static_dir: lyric_get/css
+- url: /favicon\.ico
+  static_files: lyric_get/favicon.ico
+  upload: lyric_get/favicon.ico
+
+- url: .*
+  script: main.app
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
