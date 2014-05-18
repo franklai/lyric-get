@@ -130,6 +130,8 @@ def htmlspecialchars_decode_func(m, defs=htmlentitydefs.entitydefs):
 
 def htmlspecialchars_decode(string):
     pattern = re.compile("&(\w+?);")
+    if isinstance(string, unicode):
+        return pattern.sub(htmlspecialchars_decode_func, string.encode('utf8')).decode('utf8', 'ignore')
     return pattern.sub(htmlspecialchars_decode_func, string)
 
 if __name__ == '__main__':
