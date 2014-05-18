@@ -36,6 +36,9 @@ class Lyric:
 
     def get_lyric(self):
         handler = self.get_handler()
+        
+        if not handler:
+            return 'This site is not support yet.'
 
         try:
             lyric = handler(self.url)
@@ -47,6 +50,7 @@ class Lyric:
             raise
 
         return lyric
+
 
     def get_handler(self):
         for key in site_dict:
@@ -79,7 +83,7 @@ def get_all_index():
     return site_dict.keys()
 
 if __name__ == '__main__':
-#     logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG)
 
     def runProfiling():
         import cProfile
@@ -151,18 +155,19 @@ if __name__ == '__main__':
         
                 
     def getLyric():
-        index = 'animap'
+        index = 'kget'
         url = get_test_url(index)
+        print url
         engine = Lyric(url)
         lyric = engine.get_lyric()
-#         print(repr(lyric))
+        print(repr(lyric))
 
-#     getLyric()
+    getLyric()
 
 
 #     testEverySite()
 
-    callModuleTestSite()
+#     callModuleTestSite()
 
 #     runProfiling()
 
