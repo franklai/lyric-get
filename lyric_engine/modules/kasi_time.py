@@ -23,7 +23,7 @@ class KasiTime(LyricBase):
         url = self.url
 
         if not self.find_lyric(url):
-            logging.info('Failed to get lyric of url [%s]', url)
+            logging.error('Failed to get lyric of url [%s]', url)
             return False
 
         if not self.find_song_info(url):
@@ -95,6 +95,8 @@ class KasiTime(LyricBase):
             suffix = '</a></td>'
 
             value = common.find_string_by_prefix_suffix(info_table, prefix, suffix, False)
+            if not value:
+                continue
             value = common.strip_tags(value).strip()
             if value:
                 setattr(self, key, value)
@@ -109,7 +111,8 @@ def get_lyric(url):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
-    url = 'http://www.kasi-time.com/item-67546.html'
+#     url = 'http://www.kasi-time.com/item-67546.html'
+    url = test_url
 
     full = get_lyric(url)
     if not full:
