@@ -25,6 +25,7 @@ class JoySound(LyricBase):
         except:
             self.id = ''
             self.password = ''
+            logging.info('no config for joysound account')
 
     def parse_page(self):
         url = self.url
@@ -84,8 +85,7 @@ class JoySound(LyricBase):
             
         headers = handle.get_info()
 
-        cookie = self.get_cookie(headers)
-        self.cookie = ';'.join(cookie)
+        self.cookie = self.get_cookie(headers)
 
         logging.debug('headers=%s' % (str(headers)))
         logging.debug('self.cookie=%s' % (self.cookie))
@@ -93,20 +93,10 @@ class JoySound(LyricBase):
         return True
 
     def get_cookie(self, headers):
-        cookie = []
+        cookie = ''
 
         if 'set-cookie' in headers:
-            raw_cookie = headers['set-cookie']
-
-            pattern = '(JSESSIONID=[^;]+)'
-            jsessionid = common.get_first_group_by_pattern(raw_cookie, pattern)
-            if jsessionid:
-                cookie.append(jsessionid)
-                
-            pattern = '(AlteonP=[^;]+)'
-            alteonp = common.get_first_group_by_pattern(raw_cookie, pattern)
-            if alteonp:
-                cookie.append(alteonp)
+            cookie = headers['set-cookie']
         else:
             raise
 
@@ -200,7 +190,7 @@ class JoySound(LyricBase):
     def parse_lyric(self, raw_lyric):
         lyric = self.get_song_info('KAS', raw_lyric)
 
-        self.lyric = lyric
+        self.lyric = lyric.strip()
 
         return True
 
