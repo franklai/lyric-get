@@ -21,7 +21,7 @@
 		<form id="query_form">
 		<fieldset>
 			<input type="submit" id="btn_submit" class="submit" value="Fetch"/>
-			<input type="text" id="url" class="url" value="Paste URL HERE..." title="Paste URL HERE..."/>
+			<input type="text" id="url" class="url" placeholder="Paste URL HERE..." title="Paste URL HERE..."/>
 		</fieldset>
 		</form>
 	</div>
@@ -34,7 +34,7 @@
 	<input type="button" id="select" value="Select Lyric"/>
 	<input type="button" id="copy" value="Copy Lyric (IE only)"/>
 	<div class="hr"></div>
-    <textarea lang="ja"></textarea>
+	<textarea lang="ja"></textarea>
 	</div>
 
 	<div id="tabs" class="ui-tabs">
@@ -59,8 +59,8 @@
 			<dd><a href="http://kashinavi.com/song_view.html?65545" target="_blank">http://kashinavi.com/song_view.html?65545</a></dd>
 			<dt>歌詞GET</dt>
 			<dd><a href="http://www.kget.jp/lyric/11066/" target="_blank">http://www.kget.jp/lyric/11066/</a></dd>
-			<dt>Yahoo!ミュージック - 歌詞</dt>
-			<dd><a href="http://music.yahoo.co.jp/lyrics/dtl/KAA013487/AAA108388/" target="_blank">http://music.yahoo.co.jp/lyrics/dtl/KAA013487/AAA108388/</a></dd>
+			<dt>GyaO! 歌詞サービス</dt>
+			<dd><a href="http://lyrics.gyao.yahoo.co.jp/ly/Y152097/" target="_blank">http://lyrics.gyao.yahoo.co.jp/ly/Y152097/</a></dd>
 			<dt>イベスタ歌詞とる</dt>
 			<dd><a href="http://www.evesta.jp/lyric/artists/a10019/lyrics/l7811.html" target="_blank">http://www.evesta.jp/lyric/artists/a10019/lyrics/l7811.html</a></dd>
 			<dt>アニメソングの歌詞ならここにおまかせ？</dt>
@@ -71,16 +71,12 @@
 			<dd><a href="http://joysound.com/ex/search/karaoke/_selSongNo_28721_songwords.htm" target="_blank">http://joysound.com/ex/search/karaoke/_selSongNo_28721_songwords.htm</a></dd>
 			<dt>PetitLyrics</dt>
 			<dd><a href="http://petitlyrics.com/lyrics/34690" target="_blank">http://petitlyrics.com/lyrics/34690</a></dd>
-			<dt>@SOUND</dt>
-			<dd><a href="http://atsound.jp/a/lyrics/view.php?id=0000007250" target="_blank">http://atsound.jp/a/lyrics/view.php?id=0000007250</a></dd>
 			<dt>LyricWiki</dt>
 			<dd><a href="http://lyrics.wikia.com/Ronan_Keating:When_You_Say_Nothing_At_All" target="_blank">http://lyrics.wikia.com/Ronan_Keating:When_You_Say_Nothing_At_All</a></dd>
 			<dt>J-Total Music</dt>
 			<dd><a href="http://music.j-total.net/data/026ha/012_BUMP_OF_CHICKEN/014.html" target="_blank">http://music.j-total.net/data/026ha/012_BUMP_OF_CHICKEN/014.html</a></dd>
 			<dt>metrolyrics</dt>
 			<dd><a href="http://www.metrolyrics.com/we-belong-together-lyrics-mariah-carey.html" target="_blank">http://www.metrolyrics.com/we-belong-together-lyrics-mariah-carey.html</a></dd>
-			<dt>sing365.com</dt>
-			<dd><a href="http://www.sing365.com/music/lyric.nsf/We-Belong-Together-lyrics-Mariah-Carey/12371122B3C05FE948256FBE00285AEB" target="_blank">http://www.sing365.com/music/lyric.nsf/We-Belong-Together-lyrics-Mariah-Carey/12371122B3C05FE948256FBE00285AEB</a></dd>
 		</dl>
 		</div>
 
@@ -91,18 +87,16 @@
 				<li><a href="http://www.uta-net.com/" target="_blank">Uta-Net</a></li>
 				<li><a href="http://www.kashinavi.com/" target="_blank">歌詞ナビ</a></li>
 				<li><a href="http://www2.kget.jp/releasedate/" target="_blank">歌詞GET</a></li>
-				<li><a href="http://music.yahoo.co.jp/" target="_blank">Yahoo!ミュージック</a></li>
+				<li><a href="http://lyrics.gyao.yahoo.co.jp/" target="_blank">GyaO! 歌詞サービス</a></li>
 				<li><a href="http://www.kasi-time.com/" target="_blank">歌詞タイム</a></li>
 				<li><a href="http://www.evesta.jp/lyric/" target="_blank">イベスタ歌詞とる</a></li>
 				<li><a href="http://www.jtw.zaq.ne.jp/animesong/" target="_blank">アニメソングの歌詞ならここにおまかせ？</a></li>
 				<li><a href="http://utaten.com/" target="_blank">UtaTen</a></li>
 				<li><a href="http://joysound.com/" target="_blank">JOYSOUND.com</a></li>
 				<li><a href="http://petitlyrics.com/" target="_blank">PetitLyrics</a></li>
-				<li><a href="http://atsound.jp/" target="_blank">@SOUND</a></li>
 				<li><a href="http://lyrics.wikia.com/" target="_blank">LyricWiki</a></li>
 				<li><a href="http://music.j-total.net/" target="_blank">J-Total Music</a></li>
 				<li><a href="http://www.metrolyrics.com/" target="_blank">metrolyrics</a></li>
-				<li><a href="http://www.sing365.com/" target="_blank">sing365.com</a></li>
 			</ul>
 		</div>
 		
@@ -120,12 +114,27 @@
 
 		<div id="changelog" class="ui-tabs-hide">
 		<ul>
+			<li>[2013 07-21] Fix uta-net sometimes failed to get title.</li>
+			<li>[2013 04-21]
+				<ol>
+					<li>Fix kashinavi.</li>
+					<li>Remove sing365.</li>
+					<li>Fix Yahoo Music (renamed to GyaO)</li>
+				</ol>
+			</li>
+			<li>[2013 04-20]
+				<ol>
+				<li>Fix kget (url format and web page changed).</li>
+				<li>Fix animap.</li>
+				<li>Remove atsound due to site not available.</li>
+				</ol>
+			</li>
 			<li>[2012 09-23]
-                <ol>
-                <li>Fix metrolyrics.</li>
-                <li>Fix sing365.</li>
-                </ol>
-            </li>
+				<ol>
+				<li>Fix metrolyrics.</li>
+				<li>Fix sing365.</li>
+				</ol>
+			</li>
 			<li>[2012 03-13]
 				<ol>
 				<li>Fix atsound.jp.</li>
@@ -174,16 +183,16 @@
 
 	<div id="footer">
 	<div class="hr"></div>
-    <div>
-    If you have problems to get lyric. Please report issue 
-    on <a href="http://code.google.com/p/py-lyric-retriever/issues/list" target="_blank">py-lyric-retriever Issue List</a>,
-    or contact <a href="http://franks543.blogspot.com/" target="_blank">franklai</a>.
-    </div>
-    <div>
-    如果出現無法取得歌詞的情況，
-    請回報至 <a href="http://code.google.com/p/py-lyric-retriever/issues/list" target="_blank">py-lyric-retriever Issue List</a>，
-    或者聯絡 <a href="http://franks543.blogspot.com/" target="_blank">franklai</a>。
-    </div>
+	<div>
+	If you have problems to get lyric. Please report issue 
+	on <a href="http://code.google.com/p/py-lyric-retriever/issues/list" target="_blank">py-lyric-retriever Issue List</a>,
+	or contact <a href="http://franks543.blogspot.com/" target="_blank">franklai</a>.
+	</div>
+	<div>
+	如果出現無法取得歌詞的情況，
+	請回報至 <a href="http://code.google.com/p/py-lyric-retriever/issues/list" target="_blank">py-lyric-retriever Issue List</a>，
+	或者聯絡 <a href="http://franks543.blogspot.com/" target="_blank">franklai</a>。
+	</div>
 	</div>
 
 </div>

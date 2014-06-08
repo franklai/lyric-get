@@ -4,18 +4,8 @@ $(document).ready(function(){
 
 	/** binding */
 	// select url when focus on #url [text input]
-	$("#url").bind("focus", function(e){
-		if (jQuery.trim($("#url").val()) == $("#url").attr("title")){
-			$("#url").val("");
-		}
-		else {
-			$("#url").select();
-		}
-	});
-	$("#url").bind("blur", function(e){
-		if (jQuery.trim($("#url").val()) == ""){
-			$("#url").val($("#url").attr("title"));
-		}
+	$("#url").bind('click', function(){
+		this.select();
 	});
 
 	// select lyric all
