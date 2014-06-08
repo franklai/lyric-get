@@ -93,6 +93,15 @@ def get_first_group_by_pattern(input, pattern):
         logging.debug('Failed to find pattern [%s]', pattern)
     return output
 
+def get_matches_by_pattern(input, pattern):
+    logging.debug('pattern [%s]' % (pattern, ))
+    regex = re.compile(pattern).search(input)
+    if regex:
+        return regex
+    else:
+        logging.debug('Failed to find pattern [%s]', pattern)
+    return None
+
 def get_string_by_start_end_string(startStr, endStr, input):
     start = input.find(startStr)
     if start == -1:
