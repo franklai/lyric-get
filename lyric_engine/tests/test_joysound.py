@@ -17,7 +17,7 @@ class LyricTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'坂本真綾')
         self.assertEqual(obj.lyricist, u'鈴木祥子')
         self.assertEqual(obj.composer, u'鈴木祥子')
-        self.assertEqual(len(obj.lyric), 400)
+        self.assertEqual(len(obj.lyric), 397)
 
     def test_url_id(self):
         url = 'http://joysound.com/ex/search/karaoke/_selSongNo_170492_songwords.htm'
@@ -28,7 +28,7 @@ class LyricTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'坂本真綾')
         self.assertEqual(obj.lyricist, u'坂本真綾')
         self.assertEqual(obj.composer, u'菅野よう子')
-        self.assertEqual(len(obj.lyric), 399)
+        self.assertEqual(len(obj.lyric), 396)
 
 if __name__ == '__main__':
     unittest.main()

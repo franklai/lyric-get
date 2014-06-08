@@ -30,5 +30,16 @@ class UtaNetTest(unittest.TestCase):
         self.assertEqual(obj.composer, u'Fukase')
         self.assertEqual(len(obj.lyric), 574)
 
+    def test_url_movie_format(self):
+        url = 'http://www.uta-net.com/movie/162972/'
+        obj = Lyric(url)
+        obj.parse()
+
+        self.assertEqual(obj.title, u'望郷エトランゼ')
+        self.assertEqual(obj.artist, u'冠二郎')
+        self.assertEqual(obj.lyricist, u'三浦康照')
+        self.assertEqual(obj.composer, u'岡千秋')
+        self.assertEqual(len(obj.lyric), 216)
+
 if __name__ == '__main__':
     unittest.main()
