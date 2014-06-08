@@ -30,5 +30,16 @@ class KGetTest(unittest.TestCase):
         self.assertEqual(obj.composer, u'朱鷺羽ソウ')
         self.assertEqual(len(obj.lyric), 924)
 
+    def test_url_maaya(self):
+        url = 'http://www.kget.jp/lyric/11066/'
+        obj = Lyric(url)
+        obj.parse()
+
+        self.assertEqual(obj.title, u'tune the rainbow')
+        self.assertEqual(obj.artist, u'坂本真綾')
+        self.assertEqual(obj.lyricist, u'岩里祐穂')
+        self.assertEqual(obj.composer, u'菅野よう子')
+        self.assertEqual(len(obj.lyric), 520)
+
 if __name__ == '__main__':
     unittest.main()
