@@ -36,7 +36,7 @@ class UtaNet(LyricBase):
         return True
 
     def find_lyric(self, url):
-        pattern = '/song/([0-9]+)/'
+        pattern = '/[a-z]+/([0-9]+)/'
 
         song_id = common.get_first_group_by_pattern(url, pattern)
         if not song_id:
