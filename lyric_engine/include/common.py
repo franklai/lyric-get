@@ -53,7 +53,7 @@ def get_url_content(url, data=None, headers=None):
 def half2full(input):
     import re
 
-    ascii = 'a-zA-Z0-9,\' \!\?'
+    ascii = 'a-zA-Z0-9,\'& \!\?'
     pattern = '(?<=[^%s]) | (?=[^%s])' % (ascii, ascii)
 
     return re.sub(pattern, u'　', input)
@@ -147,5 +147,11 @@ if __name__ == '__main__':
     text = """
 &#26085;&#12418;<br />
 <br />
+I&#039;m so lonely.
+R &amp; B
 """
     print(unicode2string(text))
+
+    text = 'I&#039;m so lonely. R &amp; B'
+    print(half2full(htmlspecialchars_decode(text)))
+

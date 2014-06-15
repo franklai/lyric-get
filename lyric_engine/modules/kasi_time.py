@@ -52,6 +52,7 @@ class KasiTime(LyricBase):
         lyric = lyric.replace("<br>", "\n")
         lyric = lyric.replace("&nbsp;", " ")
         lyric = common.htmlspecialchars_decode(lyric)
+        lyric = common.unicode2string(lyric)
         lyric = common.strip_slash(lyric)
         lyric = lyric.strip()
 
@@ -113,6 +114,7 @@ if __name__ == '__main__':
 
 #     url = 'http://www.kasi-time.com/item-67546.html'
     url = test_url
+    url = 'http://www.kasi-time.com/item-65831.html'
 
     full = get_lyric(url)
     if not full:
