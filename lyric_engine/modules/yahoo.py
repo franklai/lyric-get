@@ -20,11 +20,6 @@ class Yahoo(LyricBase):
     def parse_page(self):
         url = self.url
 
-        self.headers = {}
-
-        if not self.get_cookie(url):
-            logging.warning('%s cannot get cookie', url)
-
         query = self.get_xml_parameters(url)
         if not query:
             logging.info('Failed to get query of url [%s]', url)
@@ -45,20 +40,8 @@ class Yahoo(LyricBase):
 
         return True
 
-    def get_cookie(self, url):
-        req = common.URL(url, data=None, headers=self.headers)
-        info = req.get_info()
-
-        if 'Set-Cookie' not in info:
-            logging.debug('no Set-Cookie, info:%s' % (repr(info)))
-            return None
-
-        self.headers['Cookie'] = info['Set-Cookie']
-        logging.debug('Cookie[%s]' % (self.headers['Cookie'], ))
-        return self.headers['Cookie']
-
     def get_xml_parameters(self, url):
-        bytes = common.get_url_content(url, headers=self.headers)
+        bytes = common.get_url_content(url)
 
         pattern = "query +: +'([^']+)'"
         query = common.get_first_group_by_pattern(bytes, pattern)
@@ -111,8 +94,8 @@ class Yahoo(LyricBase):
         ret = True
 
         patterns = {
-            'title': 'ArtistName',
-            'artist': 'Title',
+            'title': 'Title',
+            'artist': 'ArtistName',
             'lyricist': 'WriterName',
             'composer': 'ComposerName',
         }
