@@ -4,6 +4,7 @@ import sys
 include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
+import json
 import logging
 import common
 from lyric_base import LyricBase
@@ -16,213 +17,86 @@ test_url = 'http://joysound.com/ex/search/karaoke/_selSongNo_28721_songwords.htm
 test_expect_length = 1551
 
 class JoySound(LyricBase):
-    def read_config(self):
-        try:
-            import config
-            cfg = config.Config()
-            self.id = cfg.get('joysound', 'id')
-            self.password = cfg.get('joysound', 'password')
-        except:
-            self.id = ''
-            self.password = ''
-            logging.info('no config for joysound account')
-
     def parse_page(self):
         url = self.url
 
-        self.read_config()
-
-        # get necessary cookie by login
-        if not self.do_login():
-            logging.info('Failed to login to joysound')
+        song_id = self.get_song_id(url)
+        if not song_id:
+            logging.info('Failed to song id from [%s]', url)
             return False
 
-        # convert url if not lyric page
-        converted_url = self.convert_url(url)
-        if not url:
-            logging.info('Failed to get converted url from [%s]' % (url))
-            return False
-        
-        # retrieve lyric page
-        sdata = self.get_sdata(converted_url)
-        if not sdata:
-            logging.info('Failed to get sdata of url [%s]' % (url))
+        logging.debug('Song ID is %s', song_id)
+
+        json_obj = self.get_song_json(song_id)
+        if not json_obj:
+            logging.info('Failed to get song JSON of url [%s]', url)
             return False
 
-        # retrieve real lyric content through AMF protocol
-        raw_lyric = self.get_raw_lyric(sdata)
-        if not raw_lyric:
-            logging.info('Failed to get raw data of url [%s]' % (url))
-            return False
-
-        if not self.parse_lyric(raw_lyric):
+        if not self.parse_lyric(json_obj):
             logging.info('Failed to get lyric of url [%s]', url)
             return False
 
-        if not self.parse_song_info(raw_lyric):
+        if not self.parse_song_info(json_obj):
             logging.info('Failed to get song info of url [%s]', url)
 
         return True
 
-    def send_request(self, url, data=None, headers=None):
-        obj = common.URL(url, data, headers)
+    def get_song_id(self, url):
+        pattern = '/ex/search/karaoke/_selSongNo_([0-9]+)_songwords.htm'
+        song_id = common.get_first_group_by_pattern(url, pattern)
+
+        return song_id
+
+    def get_referer(self, song_id):
+        pattern = 'http://joysound.com/ex/search/karaoke/_selSongNo_%s_songwords.htm'
+        return pattern % (song_id, )
+
+    def get_song_json(self, song_id):
+        json_url = 'http://joysound.com/ex/api/lyrics/_getLyrics.htm'
+        post_data = 'sno=%s' % (song_id, )
+        headers = {
+            'Referer': self.get_referer(song_id)
+        }
+
+        json_str = common.get_url_content(json_url, post_data, headers)
+        if not json_str:
+            logging.info('Failed to get json from url [%s]', url)
+            return False
+
+        obj = json.loads(json_str)
+
         return obj
 
-    def do_login(self):
-        """
-        Login Joysound.com, 
-        get 2 important Cookie values and save it in self.cookie
-        """
-        url = 'http://joysound.com/ex/utasuki/forwardLogin.htm'
-        data = 'loginId=%s&loginPass=%s' % (self.id, self.password, )
-        headers = {}
-
-        handle = self.send_request(url, data, headers)
-        if not handle:
-            # something error
-            logging.info('damn, login failed')
+    def parse_lyric(self, json_obj):
+        if 'kasi' not in json_obj:
+            logging.info('No "kasi" in song JSON')
             return False
-            
-        headers = handle.get_info()
 
-        self.cookie = self.get_cookie(headers)
+        value = json_obj['kasi'].replace('<br>', '\r\n')
+        value = common.unicode2string(value)
+        value = value.strip()
 
-        logging.debug('headers=%s' % (str(headers)))
-        logging.debug('self.cookie=%s' % (self.cookie))
-
-        return True
-
-    def get_cookie(self, headers):
-        cookie = ''
-
-        if 'set-cookie' in headers:
-            cookie = headers['set-cookie']
-        else:
-            raise
-
-        return cookie
-
-    def convert_url(self, url):
-        # convert URL if not lyric page
-        # http://joysound.com/ex/search/song.htm?gakkyokuId=344513
-        # http://joysound.com/ex/search/karaoke/_selSongNo_124645_songwords.htm
-
-        lyric_page_pattern = '(/ex/search/karaoke/_selSongNo_[0-9]+_songwords.htm)'
-
-        song_page_pattern = '/ex/search/song.htm\?gakkyokuId=([0-9]+)'
-        id = common.get_first_group_by_pattern(url, song_page_pattern)
-        if id:
-            # song page pattern, get this page and parse id
-            html = common.get_url_content(url)
-
-            relative_url = common.get_first_group_by_pattern(html, lyric_page_pattern)
-           
-            return urlparse.urljoin(url, relative_url)
-            
-        return url
-    
-    def get_sdata(self, url):
-        """
-        Load the Lyric Page
-        find the sdata for this lyric
-        """
-        data = None
-        headers = {
-            'Cookie': self.cookie,
-        }
-
-        handle = self.send_request(url, data, headers)
-        logging.debug('sent request with cookie: %s' % (self.cookie.encode('utf8')))
-        
-        html = handle.get_content()
-
-        # do parsing
-        sdata = None
-        pattern = 'viewLyrics\.swf\?sd=([^"]+)'
-        sdata = common.get_first_group_by_pattern(html, pattern)
-
-        logging.debug('sdata=%s' % (str(sdata)))
-
-        return sdata
-
-    def get_raw_lyric(self, sdata):
-        """
-        With sdata, load the lyric
-        Action Message Format
-        """
-        if sdata == None:
-            return None
-
-        prefix = '\0\0\0\0\0\1\0\x1a'
-        url = 'http://www.lyriget.jp/flashservices/gateway'
-        data = '%s%s\0\2/1\0\0\0\x33\x0a\0\0\0\1\3\0\5sData\2\0 %s\0\0\x09' % (
-            prefix, 'xing_cfc.songdata.get_data', sdata
-        )
-        headers = {
-            'Content-Type': 'application/x-amf',
-        }
-
-        handle = self.send_request(url, data, headers)
-
-        return handle.get_content()
-    
-    def parse_raw_lyric(self, raw_lyric):
-        if raw_lyric == None:
-            return None
-
-        # song info
-        lyric = self.get_song_info('KAS', raw_lyric)
-
-        lines = []
-
-        lines.append(u'%s\n' % (title))
-        lines.append(u'%s：%s' % (u'歌手', artist))
-        lines.append(u'%s：%s' % (u'作詞', lyricist))
-        lines.append(u'%s：%s' % (u'作曲', music))
-        lines.append('\n\n')
-
-        song_info = '\n'.join(lines)
-
-        lyric = song_info + lyric.strip()
-
-        return lyric
-
-    def parse_lyric(self, raw_lyric):
-        lyric = self.get_song_info('KAS', raw_lyric)
-
-        self.lyric = lyric.strip()
+        self.lyric = value
 
         return True
 
-    def parse_song_info(self, raw_lyric):
-        ret = True
-
+    def parse_song_info(self, json_obj):
         patterns = {
-            'title': 'MNM',
-            'artist': 'KNM',
-            'lyricist': 'SINM',
-            'composer': 'SKNM',
+            'title': 'song_disp_str',
+            'artist': 'singer_disp',
+            'lyricist': 'songwriter',
+            'composer': 'composer',
         }
 
         for key in patterns:
-            pattern = patterns[key]
+            json_key = patterns[key]
 
-            value = self.get_song_info(pattern, raw_lyric)
+            if json_key in json_obj:
+                value = json_obj[json_key]
 
-            if value:
-                setattr(self, key, value)
-            else:
-                logging.warning('Failed to get %s', key)
-                ret = False
-
-        return ret
-
-    def get_song_info(self, prefix, raw_lyric):
-        start = raw_lyric.find(prefix) + len(prefix) + 3
-        end = raw_lyric.find('\0', start)
-        result = raw_lyric[start:end].decode('utf8')
-
-        return result
+                if value:
+                    setattr(self, key, value)
+        return True
 
 def get_lyric(url):
     obj = JoySound(url)
