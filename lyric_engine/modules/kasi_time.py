@@ -93,7 +93,7 @@ class KasiTime(LyricBase):
             pattern = patterns[key]
 
             prefix = u'<td class="td1">%s</td>' % (pattern)
-            suffix = '</a></td>'
+            suffix = '</td>'
 
             value = common.find_string_by_prefix_suffix(info_table, prefix, suffix, False)
             if not value:
