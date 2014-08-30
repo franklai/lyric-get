@@ -41,19 +41,17 @@ class LyricWiki(LyricBase):
         return html
 
     def find_lyric(self, html):
-        pattern = '</div>(&#.*)<!--'
-        items = re.findall(pattern, html)
+        prefix = "<div class='lyricbox'>"
+        suffix = '<!--'
+        line = common.find_string_by_prefix_suffix(html, prefix, suffix, True)
 
-        lyrics = []
-        for item in items:
-            string = item.replace('<br />', '\n')
+        prefix = '</script>'
+        suffix = '<!--'
+        lyric = common.find_string_by_prefix_suffix(line, prefix, suffix, False)
 
-            string += '\n'
-            lyrics.append(string)
-        lyric = '\n'.join(lyrics)
-
+        lyric = lyric.replace('<br />', '\n')
         lyric = common.unicode2string(lyric).strip()
-        lyric = common.strip_tags(lyric)
+        lyric = common.strip_tags(lyric).strip()
 
         self.lyric = lyric
         return True
