@@ -58,6 +58,17 @@ class MusicJp(LyricBase):
 
     def get_cookie(self, handle):
         info = handle.get_info()
+        set_cookie = handle.get_header('set-cookie')
+
+        if isinstance(set_cookie, list):
+            # google url fetch service for set-cookie will return list
+            logging.info('set_cookie: %s' % (set_cookie))
+            for item in set_cookie:
+                pattern = '(ASP.NET_SessionId=[0-9a-z]+;)'
+                cookie = common.get_first_group_by_pattern(item, pattern)
+                if cookie:
+                    return cookie
+
         if 'set-cookie' in info:
             pattern = '(ASP.NET_SessionId=[0-9a-z]+;)'
             cookie = common.get_first_group_by_pattern(info['set-cookie'], pattern)

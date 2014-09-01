@@ -45,6 +45,12 @@ class URL:
         else:
             return self.handle.info()
 
+    def get_header(self, header_name):
+        if self.google:
+            return self.handle.header_msg.getheaders(header_name)
+        else:
+            return self.handle.info()[header_name]
+
 def get_url_content(url, data=None, headers=None):
     obj = URL(url, data, headers)
 
