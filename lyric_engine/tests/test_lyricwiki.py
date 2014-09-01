@@ -15,7 +15,7 @@ class LyricWikiTest(unittest.TestCase):
 
         self.assertEqual(obj.title, u'僕たちが恋をする理由')
         self.assertEqual(obj.artist, u'坂本真綾 (Maaya Sakamoto)')
-        self.assertEqual(len(obj.lyric), 1394)
+        self.assertEqual(len(obj.lyric), 410)
 
     def test_url_02(self):
         url = 'http://lyrics.wikia.com/Zard:%E9%81%8B%E5%91%BD%E3%81%AE%E3%83%AB%E3%83%BC%E3%83%AC%E3%83%83%E3%83%88%E5%BB%BB%E3%81%97%E3%81%A6'
