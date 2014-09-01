@@ -58,7 +58,10 @@ class MusicJp(LyricBase):
 
     def get_cookie(self, handle):
         info = handle.get_info()
+        logging.debug('info: %s' % (info))
+
         set_cookie = handle.get_header('set-cookie')
+        logging.debug('set_cookie: %s' % (set_cookie))
 
         if isinstance(set_cookie, list):
             # google url fetch service for set-cookie will return list
