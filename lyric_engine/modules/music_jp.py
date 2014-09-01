@@ -62,7 +62,8 @@ class MusicJp(LyricBase):
             pattern = '(ASP.NET_SessionId=[0-9a-z]+;)'
             cookie = common.get_first_group_by_pattern(info['set-cookie'], pattern)
             if not cookie:
-                loggin.warn('Failed to get session id from cookie [%s]' % (info['set-cookie']))
+                logging.error('Failed to get session id from cookie [%s]' % (info['set-cookie']))
+                return ''
             return cookie
 
         return ''
