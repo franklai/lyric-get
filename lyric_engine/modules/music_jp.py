@@ -42,7 +42,7 @@ class MusicJp(LyricBase):
         return True
 
     def get_url_content(self, url):
-        handle = common.URL(url)
+        handle = common.URL('http://music-book.jp/music/')
         cookie = self.get_cookie(handle)
 
         headers = {
