@@ -21,7 +21,9 @@ class MusicJp(LyricBase):
     def parse_page(self):
         url = self.url
 
+        logging.debug('bef get_url_content')
         content = self.get_url_content(url)
+        logging.debug('aft get_url_content')
         if not content:
             logging.info('Failed to get content of url [%s]', url)
             return False
@@ -42,45 +44,16 @@ class MusicJp(LyricBase):
         return True
 
     def get_url_content(self, url):
-#         handle = common.URL('http://music-book.jp/music/')
-#         cookie = self.get_cookie(handle)
-
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2141.0 Safari/537.36',
-#             'Cookie': cookie
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2141.0 Safari/537.36'
         }
+
         html = common.get_url_content(url, data=None, headers=headers)
         if not html:
             logging.error('Failed to get html of url [%s]' % (url, ))
             return False
 
         return html.decode('utf-8', 'ignore')
-
-    def get_cookie(self, handle):
-        info = handle.get_info()
-        logging.debug('info: %s' % (info))
-
-        set_cookie = handle.get_header('set-cookie')
-        logging.debug('set_cookie: %s' % (set_cookie))
-
-        if isinstance(set_cookie, list):
-            # google url fetch service for set-cookie will return list
-            logging.info('set_cookie: %s' % (set_cookie))
-            for item in set_cookie:
-                pattern = '(ASP.NET_SessionId=[0-9a-z]+;)'
-                cookie = common.get_first_group_by_pattern(item, pattern)
-                if cookie:
-                    return cookie
-
-        if 'set-cookie' in info:
-            pattern = '(ASP.NET_SessionId=[0-9a-z]+;)'
-            cookie = common.get_first_group_by_pattern(info['set-cookie'], pattern)
-            if not cookie:
-                logging.error('Failed to get session id from cookie [%s]' % (info['set-cookie']))
-                return ''
-            return cookie
-
-        return ''
 
     def convert_js_to_url(self, js):
         js = js.replace('var data = "', '')
@@ -107,6 +80,7 @@ class MusicJp(LyricBase):
             return False
 
         post_data = self.convert_js_to_url(line)
+        logging.debug('post data: %s' % (post_data, ))
 
         lyric_url = 'http://music-book.jp/music/MusicDetail/GetLyric'
         raw_json = common.get_url_content(lyric_url, data=post_data)
@@ -124,8 +98,6 @@ class MusicJp(LyricBase):
         return True
 
     def find_song_info(self, json, url):
-        # so lazy do not parse song info, left it in lyric
-
         result = urlparse.urlparse(url)
         logging.debug(result)
         if not result.query:
