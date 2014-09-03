@@ -42,12 +42,12 @@ class MusicJp(LyricBase):
         return True
 
     def get_url_content(self, url):
-        handle = common.URL('http://music-book.jp/music/')
-        cookie = self.get_cookie(handle)
+#         handle = common.URL('http://music-book.jp/music/')
+#         cookie = self.get_cookie(handle)
 
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2141.0 Safari/537.36',
-            'Cookie': cookie
+#             'Cookie': cookie
         }
         html = common.get_url_content(url, data=None, headers=headers)
         if not html:

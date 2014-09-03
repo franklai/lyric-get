@@ -29,9 +29,13 @@ class URL:
 #         except ImportError:
             # not in Google App Engine environment, then use traditional urllib2
         import urllib2
+        import cookielib
+
+        cj = cookielib.CookieJar()
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
         req = urllib2.Request(url, data, headers)
-        self.handle = urllib2.urlopen(req)
+        self.handle = opener.open(req)
 
     def get_content(self):
         if self.google:
