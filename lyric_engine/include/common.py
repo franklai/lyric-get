@@ -20,18 +20,18 @@ class URL:
             method = 'post'
             headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
-        try:
-            # if under Google App Engine (we cannot use urllib)
-            from google.appengine.api import urlfetch
-
-            self.handle = urlfetch.fetch(url, data, method, headers)
-            self.google = True
-        except ImportError:
+#         try:
+#             # if under Google App Engine (we cannot use urllib)
+#             from google.appengine.api import urlfetch
+# 
+#             self.handle = urlfetch.fetch(url, data, method, headers)
+#             self.google = True
+#         except ImportError:
             # not in Google App Engine environment, then use traditional urllib2
-            import urllib2
+        import urllib2
 
-            req = urllib2.Request(url, data, headers)
-            self.handle = urllib2.urlopen(req)
+        req = urllib2.Request(url, data, headers)
+        self.handle = urllib2.urlopen(req)
 
     def get_content(self):
         if self.google:
