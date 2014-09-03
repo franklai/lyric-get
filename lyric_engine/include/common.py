@@ -1,36 +1,16 @@
 # -*- coding: utf8 -*-
+import cookielib
 import logging
 import re
+import urllib2
 
 # fetch function of google.appengine.api.urlfetch
 # fetch(url, payload=None, method=GET, headers={}, allow_truncated=False)
 
 class URL:
     def __init__(self, url, data=None, headers=None):
-        self.google = False
-
-        method = 'get'
-
         if headers is None:
-            headers = {
-                'User-Agent': 'Google-urlfetch',
-            }
-
-        if data:
-            method = 'post'
-            headers['Content-Type'] = 'application/x-www-form-urlencoded'
-
-#         try:
-#             # if under Google App Engine (we cannot use urllib)
-#             from google.appengine.api import urlfetch
-# 
-#             self.handle = urlfetch.fetch(url, data, method, headers)
-#             self.google = True
-#         except ImportError:
-            # not in Google App Engine environment, then use traditional urllib2
-        import urllib2
-        import cookielib
-
+            headers = {}
         cj = cookielib.CookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
@@ -38,22 +18,10 @@ class URL:
         self.handle = opener.open(req)
 
     def get_content(self):
-        if self.google:
-            return self.handle.content
-        else:
-            return self.handle.read()
+        return self.handle.read()
 
     def get_info(self):
-        if self.google:
-            return self.handle.headers
-        else:
-            return self.handle.info()
-
-    def get_header(self, header_name):
-        if self.google:
-            return self.handle.header_msg.getheaders(header_name)
-        else:
-            return self.handle.info()[header_name]
+        return self.handle.info()
 
 def get_url_content(url, data=None, headers=None):
     obj = URL(url, data, headers)
