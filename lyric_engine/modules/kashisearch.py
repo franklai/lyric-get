@@ -107,8 +107,6 @@ class KashiSearch(LyricBase):
         prefix = '="lyrics_info_text"'
         suffix = '</div>'
         info_text = common.find_string_by_prefix_suffix(content, prefix, suffix, False)
-#         logging.debug('content: %s' % (content, ))
-        print(content.encode('utf-8', 'ignore'))
         if not info_text:
             logging.info('Failed to find lyrics info text')
         one_line = info_text.replace('\n', '')
