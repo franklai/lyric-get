@@ -109,8 +109,8 @@ class PetitLyrics(LyricBase):
         return '\n'.join(lyric_list).decode('utf8', 'ignore')
 
     def parse_artist_title(self, html):
-        startStr = '<div class="title-bar">'
-        endStr = '</div>'
+        startStr = '"description" content="'
+        endStr = u'の歌詞ページです'
 
         infoStr = common.get_string_by_start_end_string(startStr, endStr, html)
         if not infoStr:
