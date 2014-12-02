@@ -83,7 +83,7 @@ class UtaNet(LyricBase):
 
         patterns = {
             'title': u'<h2[^>]*>([^<]+)</h2>',
-            'artist': u'歌手：<h3.*?><a href="/artist/[0-9]+/">([^<]+)</a></h3>',
+            'artist': u'歌手：<h3.*?><a href="/artist/[0-9]+/".*?>(.+?)</a></h3>',
             'lyricist': u'作詞：<h4.*?>([^<]+)</h4>',
             'composer': u'作曲：<h4.*?>([^<]+)</h4>'
         }
@@ -97,6 +97,7 @@ class UtaNet(LyricBase):
                 logging.info('Failed to get %s of url [%s]', key, url)
                 ret = False
             else:
+                value = common.strip_tags(value)
                 setattr(self, key, value)
 
         return ret
