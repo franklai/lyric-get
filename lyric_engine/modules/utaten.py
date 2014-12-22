@@ -12,8 +12,8 @@ from lyric_base import LyricBase
 site_class = 'UtaTen'
 site_index = 'utaten'
 site_keyword = 'utaten'
-site_url = 'http://utaten.com/'
-test_url = 'http://utaten.com/lyric/jb50903142'
+site_url = 'http://utaten.jp/'
+test_url = 'http://utaten.jp/lyric/%E5%9D%82%E6%9C%AC%E7%9C%9F%E7%B6%BE/%E5%83%95%E3%81%9F%E3%81%A1%E3%81%8C%E6%81%8B%E3%82%92%E3%81%99%E3%82%8B%E7%90%86%E7%94%B1/'
 
 class UtaTen(LyricBase):
     def parse_page(self):
@@ -35,36 +35,50 @@ class UtaTen(LyricBase):
         return True
 
     def get_lyric_content(self, url):
-        prefix = 'http://utaten.com/lyric/load_text.php?LID='
-        pattern = '/lyric/([a-z]{2}[0-9]+)'
-
-        song_id = common.get_first_group_by_pattern(url, pattern)
-        if not song_id:
-            logging.info('Failed to get song id of url [%s]', url)
-            return False
-
-        content_url = prefix + song_id
-        content = common.get_url_content(content_url)
-        if not content:
-            logging.info('Failed to get song content of url [%s]', url)
-            return False
+        content = common.get_url_content(url)
 
         return content
 
     def find_lyric(self, content):
-        value = content.decode('sjis', 'ignore')
+        content = content.decode('utf-8', 'ignore')
 
-        value = re.sub('[ \t]+\n', '\n', value) # remove trailing space
-        value = re.sub('\t *(.*)\n', r'\n(\1)\n', value) # move ruby to next line
-        value = re.sub('   +', ',', value)
-        value = value.strip()
+        prefix = '<div class="lyricBody">'
+        suffix = '</div>'
 
-        self.lyric = value
+        lyric = common.find_string_by_prefix_suffix(content, prefix, suffix)
+
+        pattern = '<span class="rt">(.*?)</span>'
+        lyric = re.sub(pattern, r'(\1)', lyric)
+        lyric = common.strip_tags(lyric)
+        lyric = lyric.strip()
+
+        self.lyric = lyric
         
         return True
 
     def find_song_info(self, content):
-        # so lazy do not parse song info, left it in lyric
+        content = content.decode('utf-8', 'ignore')
+
+        pattern = '<h1 class="lyric__title">(.*?)</h1>'
+        title = common.get_first_group_by_pattern(content, pattern)
+        title = common.htmlspecialchars_decode(title)
+        self.title = title
+
+        prefixes = {
+            'artist': u'アーティスト</dt>',
+            'lyricist': u'作詞</dt>',
+            'composer': u'作曲</dt>',
+        }
+        suffix = '</dd>'
+
+        for key in prefixes:
+            prefix = prefixes[key]
+            value = common.find_string_by_prefix_suffix(content, prefix, suffix, False)
+            if value:
+                value = common.strip_tags(value).strip()
+                value = common.htmlspecialchars_decode(value)
+                setattr(self, key, value)
+
         return True
 
 def get_lyric(url):
