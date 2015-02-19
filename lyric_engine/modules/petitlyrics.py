@@ -44,6 +44,8 @@ class PetitLyrics(LyricBase):
 
         r = s.get(url)
 
+        plsession = r.cookies['PLSESSION']
+
         # 2. get 1st part lyric from html and song_info
         html = r.text
         if not html:
@@ -59,7 +61,7 @@ class PetitLyrics(LyricBase):
         logging.debug('CSRF token is %s' % (token, ))
 
         # 2. get second part lyric
-        lyric_2nd = self.get_lyric_2nd_part(id, token)
+        lyric_2nd = self.get_lyric_2nd_part(id, token, plsession)
         self.lyric = common.htmlspecialchars_decode(lyric_1st + lyric_2nd)
 
         self.parse_artist_title(html)
@@ -109,29 +111,26 @@ class PetitLyrics(LyricBase):
 
         return token
 
-    def get_lyric_2nd_part(self, id, token):
+    def get_lyric_2nd_part(self, id, token, plsession):
         if not id:
             return None
 
+        actionUrl = 'http://www.csie.ntu.edu.tw/~b91072/php/lyric_get_helper/get_petitlyrics_2nd.php'
 #         actionUrl = 'http://petitlyrics.com/com/get_lyrics.ajax'
-        actionUrl = 'http://www.csie.ntu.edu.tw/~b91072/php/v.php'
-        postData = {'lyrics_id': id}
-        headers = {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-Dummy': 'Dummy\r\nX-CSRF-Token: %s' % (token,)
+        payload = {
+            'id': id,
+            'token': token,
+            'plsession': plsession
         }
 
-        r = self.s.post(actionUrl, data=postData, headers=headers)
-        logging.debug('status: %d' % (r.status_code))
-        logging.debug('result: %s' % (r.content))
-        return r.content
-#         obj = r.json()
-# 
-#         lyric_list = []
-#         for item in obj:
-#             lyric_list.append(base64.b64decode(item['lyrics']))
-# 
-#         return '\n'.join(lyric_list).decode('utf8', 'ignore')
+        r = self.s.get(actionUrl, params=payload)
+        obj = r.json()
+
+        lyric_list = []
+        for item in obj:
+            lyric_list.append(base64.b64decode(item['lyrics']))
+
+        return '\n'.join(lyric_list).decode('utf8', 'ignore')
 
     def parse_artist_title(self, html):
         startStr = '"description" content="'
