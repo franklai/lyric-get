@@ -7,7 +7,9 @@ sys.path.append(include_dir)
 import base64
 import json
 import logging
+import urlparse
 import common
+import requests
 from lyric_base import LyricBase
 
 site_class = 'PetitLyrics'
@@ -31,23 +33,33 @@ class PetitLyrics(LyricBase):
     def parse_page(self):
         url = self.url
 
+        s = requests.Session()
+        self.s = s
+
         # 1. get song id from url
         id = self.get_song_id(url)
         if not id:
             logging.error('Failed to get id of url [%s]', url)
             return False
 
-        handle = common.URL(url)
+        r = s.get(url)
 
         # 2. get 1st part lyric from html and song_info
-        html = handle.get_content().decode('utf8', 'ignore')
+        html = r.text
         if not html:
             logging.info('Failed to get html of url [%s]' % (url))
             return False
         lyric_1st = self.get_lyric_1st_part(html)
 
+        # 2. get CSRF token
+        token = self.get_csrf_token(html)
+        if not token:
+            logging.info('Failed to get CSRF token of url [%s]' % (url))
+            return False
+        logging.debug('CSRF token is %s' % (token, ))
+
         # 2. get second part lyric
-        lyric_2nd = self.get_lyric_2nd_part(id, handle)
+        lyric_2nd = self.get_lyric_2nd_part(id, token)
         self.lyric = common.htmlspecialchars_decode(lyric_1st + lyric_2nd)
 
         self.parse_artist_title(html)
@@ -81,26 +93,35 @@ class PetitLyrics(LyricBase):
 
         return id
 
-    def get_cookie(self, handle):
-        info = handle.get_info()
-        if 'set-cookie' in info:
-            return info['set-cookie']
+    def get_csrf_token(self, html):
+        pattern = '(/lib/pl-lib.js[^"]+)'
 
-        return ''
+        pl_lib_js = common.get_first_group_by_pattern(html, pattern)
+        if not pl_lib_js:
+            return None
 
-    def get_lyric_2nd_part(self, id, handle):
+        url = urlparse.urljoin(site_url, pl_lib_js)
+
+        r = self.s.get(url)
+
+        pattern = "'X-CSRF-Token', '(.*?)'"
+        token = common.get_first_group_by_pattern(r.text, pattern)
+
+        return token
+
+    def get_lyric_2nd_part(self, id, token):
         if not id:
             return None
 
         actionUrl = 'http://petitlyrics.com/com/get_lyrics.ajax'
-        cookie = self.get_cookie(handle)
-        postData = 'lyrics_id=%s' % (id, )
+        postData = {'lyrics_id': id}
         headers = {
             'X-Requested-With': 'XMLHttpRequest',
-            'Cookie': cookie
+            'X-Dummy': 'Dummy\r\nX-CSRF-Token: %s' % (token,)
         }
-        raw_json = common.get_url_content(actionUrl, data=postData, headers=headers)
-        obj = json.loads(raw_json)
+
+        r = self.s.post(actionUrl, data=postData, headers=headers)
+        obj = r.json()
 
         lyric_list = []
         for item in obj:
