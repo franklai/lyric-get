@@ -113,7 +113,8 @@ class PetitLyrics(LyricBase):
         if not id:
             return None
 
-        actionUrl = 'http://petitlyrics.com/com/get_lyrics.ajax'
+#         actionUrl = 'http://petitlyrics.com/com/get_lyrics.ajax'
+        actionUrl = 'http://www.csie.ntu.edu.tw/~b91072/php/v.php'
         postData = {'lyrics_id': id}
         headers = {
             'X-Requested-With': 'XMLHttpRequest',
@@ -121,13 +122,16 @@ class PetitLyrics(LyricBase):
         }
 
         r = self.s.post(actionUrl, data=postData, headers=headers)
-        obj = r.json()
-
-        lyric_list = []
-        for item in obj:
-            lyric_list.append(base64.b64decode(item['lyrics']))
-
-        return '\n'.join(lyric_list).decode('utf8', 'ignore')
+        logging.debug('status: %d' % (r.status_code))
+        logging.debug('result: %s' % (r.content))
+        return r.content
+#         obj = r.json()
+# 
+#         lyric_list = []
+#         for item in obj:
+#             lyric_list.append(base64.b64decode(item['lyrics']))
+# 
+#         return '\n'.join(lyric_list).decode('utf8', 'ignore')
 
     def parse_artist_title(self, html):
         startStr = '"description" content="'
