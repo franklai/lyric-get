@@ -10,18 +10,40 @@ import sys
 
 # load all engine
 def filenameToModuleName(f):
+    items = f.split('\\')
+    if len(items) == 3:
+        f = items[2]
     return os.path.splitext(f)[0]
 
-module_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'modules')
-# add search path
-if module_dir not in sys.path:
-    sys.path.append(module_dir)
+def appendPath(dirs):
+    for d in dirs:
+        full_dir = os.path.join(os.path.dirname(__file__), d)
+        if full_dir not in sys.path:
+            sys.path.append(full_dir)
+appendPath(['', 'modules', 'include'])
 
-files = os.listdir(module_dir)
-test = re.compile('.*\.py$')
-files = [x for x in files if test.search(x)]
-moduleNames = [filenameToModuleName(x) for x in files]
-modules = [__import__(x) for x in moduleNames]
+try:
+    jibun = __import__('lyric_engine')
+    # test if load from zip (py2exe)
+    if hasattr(jibun, '__loader__'):
+        loader = jibun.__loader__
+        files = __import__('__init__').__loader__._files.keys()
+        test = re.compile('lyric_engine.modules.[a-z]')
+        files = [x for x in files if test.search(x)]
+        moduleNames = [filenameToModuleName(x) for x in files]
+        modules = [__import__(x) for x in moduleNames if x is not '__init__']
+    else:
+        raise Exception('do default')
+except:
+    module_dir = os.path.join(os.path.dirname(__file__), 'modules')
+    files = os.listdir(module_dir)
+#    print(files)
+    test = re.compile('^[a-z].*\.py$')
+    files = [x for x in files if test.search(x)]
+    moduleNames = [filenameToModuleName(x) for x in files]
+    modules = [__import__(x) for x in moduleNames]
+
+#print(moduleNames)
 
 site_dict = {}
 for module in modules:
