@@ -73,6 +73,7 @@ setup(
             "optimize": 2,
             "compressed": 1,
             "includes": includes,
+            "packages": ['lyric_engine.include.requests']
         }
     },
     data_files = [('', ['lyric_ico.ico', 'waiting.gif'] + pycard_resources)]
