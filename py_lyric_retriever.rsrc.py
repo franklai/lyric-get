@@ -5,7 +5,7 @@
         'backgrounds': [{
                 'type': 'Background',
                 'name': 'bgLyricRetriever',
-                'title': u'pyLyricRetriever 4.6 beta',
+                'title': u'pyLyricRetriever 4.6.1 beta',
                 'size': (626, 630),
                 'statusBar': 1,
                 'icon': 'lyric_ico.ico',

@@ -7,8 +7,8 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{07F18400-0246-4455-8382-A97E9ACDB523}
 AppName=pyLyricRetriever
-AppVersion=4.6
-;AppVerName=pyLyricRetriever 4.6
+AppVersion=4.6.1
+;AppVerName=pyLyricRetriever 4.6.1
 AppPublisher=franklai
 AppPublisherURL=http://franks543.blogspot.com/
 AppSupportURL=http://franks543.blogspot.com/
