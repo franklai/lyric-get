@@ -59,13 +59,17 @@ class UtaTen(LyricBase):
     def find_song_info(self, content):
         content = content.decode('utf-8', 'ignore')
 
-        pattern = '<h1 class="lyric__title">(.*?)</h1>'
+        pattern = u'<meta property="og:title" content="(.*?)　歌詞 \|'
         title = common.get_first_group_by_pattern(content, pattern)
         title = common.htmlspecialchars_decode(title)
         self.title = title
 
+        pattern = u'<meta property="og:description" content="(.*?)が歌う'
+        artist = common.get_first_group_by_pattern(content, pattern)
+        artist = common.htmlspecialchars_decode(artist)
+        self.artist = artist
+
         prefixes = {
-            'artist': u'アーティスト</dt>',
             'lyricist': u'作詞</dt>',
             'composer': u'作曲</dt>',
         }
