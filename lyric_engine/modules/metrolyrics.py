@@ -45,7 +45,7 @@ class MetroLyrics(LyricBase):
         rawLyric = common.get_string_by_start_end_string(prefix, suffix, html)
 
         rawLyric = rawLyric.replace('<br />', '\n')
-        rawLyric = rawLyric.replace('</p>', '\n\n')
+        rawLyric = rawLyric.replace("<p class='verse'>", '\n')
         rawLyric = common.strip_tags(rawLyric).strip()
 
         self.lyric = rawLyric
