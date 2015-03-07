@@ -97,7 +97,7 @@ class UtaNet(LyricBase):
                 logging.info('Failed to get %s of url [%s]', key, url)
                 ret = False
             else:
-                value = common.strip_tags(value)
+                value = common.unicode2string(common.strip_tags(value))
                 setattr(self, key, value)
 
         return ret
@@ -110,7 +110,7 @@ def get_lyric(url):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
-    url = 'http://www.uta-net.com/song/138139/'
+    url = 'http://www.uta-net.com/song/181206/'
 
 #     obj = UtaNet(url)
 #     full = obj.get()

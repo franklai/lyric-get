@@ -41,5 +41,16 @@ class UtaNetTest(unittest.TestCase):
         self.assertEqual(obj.composer, u'岡千秋')
         self.assertEqual(len(obj.lyric), 216)
 
+    def test_url_bz_single_quote(self):
+        url = 'http://www.uta-net.com/song/181206/'
+        obj = Lyric(url)
+        obj.parse()
+
+        self.assertEqual(obj.title, u'Las Vegas')
+        self.assertEqual(obj.artist, u"B'z")
+        self.assertEqual(obj.lyricist, u'稲葉浩志')
+        self.assertEqual(obj.composer, u'松本孝弘')
+        self.assertEqual(len(obj.lyric), 426)
+
 if __name__ == '__main__':
     unittest.main()
