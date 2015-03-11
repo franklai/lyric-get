@@ -19,13 +19,13 @@ class UtaTen(LyricBase):
     def parse_page(self):
         url = self.url
 
-        loggin.debug('url is [%s]', url)
+        logging.debug('url is [%s]', url)
         content = self.get_lyric_content(url)
         if not content:
             logging.info('Failed to get lyric of url [%s]', url)
             return False
 
-        loggin.debug('web content length [%d]', len(content))
+        logging.debug('web content length [%d]', len(content))
         if not self.find_lyric(content):
             logging.info('Failed to get lyric of url [%s]', url)
             return False
