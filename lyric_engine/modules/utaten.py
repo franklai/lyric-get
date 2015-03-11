@@ -20,7 +20,10 @@ class UtaTen(LyricBase):
     def parse_page(self):
         url = self.url
 
-        r = requests.get(url)
+        proxy = {
+            'http': 'http://174.6.79.50:3128'
+        }
+        r = requests.get(url, proxies=proxy)
         if r.status_code != 200:
             logging.info('Cannot get content of url [%s], status code [%d]', url, r.status_code)
             logging.debug('headers: [%s]', r.headers)
