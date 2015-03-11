@@ -20,18 +20,16 @@ class UtaTen(LyricBase):
     def parse_page(self):
         url = self.url
 
-        logging.debug('url is [%s]', url)
-        try:
-            logging.debug('bef requests')
-#             content = self.get_lyric_content(url)
-            r = requests.get(url)
-            r.encoding = 'utf-8'
-            content = r.text
-        except Exception as e:
-            logging.error('Failed to get lyric content of url [%s]', url)
-            logging.info('strerror: [%s]', e.strerror)
+        r = requests.get(url)
+        if r.status_code != 200:
+            logging.info('Cannot get content of url [%s], status code [%d]', url, r.status_code)
+            logging.debug('headers: [%s]', r.headers)
+            return False
 
-        logging.debug('mark')
+        logging.debug('headers: [%s]', r.headers)
+        r.encoding = 'utf-8'
+        content = r.text
+
         if not content:
             logging.info('Failed to get lyric of url [%s]', url)
             return False
