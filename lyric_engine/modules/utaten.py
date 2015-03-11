@@ -4,6 +4,7 @@ import sys
 include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
+import base64
 import logging
 import re
 import requests
@@ -20,10 +21,14 @@ class UtaTen(LyricBase):
     def parse_page(self):
         url = self.url
 
-        proxy = {
-            'http': 'http://86.107.110.73:8089'
-        }
-        r = requests.get(url, proxies=proxy)
+        path = url.replace(site_url, '/')
+        encoded = base64.b64encode(path)
+        csie_url = 'http://www.csie.ntu.edu.tw/~b91072/php/lyric_get_helper/get_utaten.php?id=%s&token=token' % (encoded)
+
+#         proxy = {
+#             'http': 'http://86.107.110.73:8089'
+#         }
+        r = requests.get(csie_url)
         if r.status_code != 200:
             logging.info('Cannot get content of url [%s], status code [%d]', url, r.status_code)
             logging.debug('headers: [%s]', r.headers)
