@@ -20,7 +20,12 @@ class UtaTen(LyricBase):
         url = self.url
 
         logging.debug('url is [%s]', url)
-        content = self.get_lyric_content(url)
+        try:
+            content = self.get_lyric_content(url)
+        except Exception as e:
+            logging.error('Failed to get lyric content of url [%s]', url)
+            logging.info('strerror: [%s]', e.strerror)
+
         if not content:
             logging.info('Failed to get lyric of url [%s]', url)
             return False
