@@ -9,7 +9,7 @@ from utaten import UtaTen as Lyric
 
 class UtaTenTest(unittest.TestCase):
     def test_url_guren(self):
-        url = 'http://utaten.jp/lyric/BUMP+OF+CHICKEN/beautiful+glider/'
+        url = 'http://utaten.com/lyric/BUMP+OF+CHICKEN/beautiful+glider/'
         obj = Lyric(url)
         obj.parse()
 
@@ -20,7 +20,7 @@ class UtaTenTest(unittest.TestCase):
         self.assertEqual(len(obj.lyric), 959)
 
     def test_url_shiranai(self):
-        url = 'http://utaten.jp/lyric/AAA/Charge+%26++Go%21/'
+        url = 'http://utaten.com/lyric/AAA/Charge+%26++Go%21/'
         obj = Lyric(url)
         obj.parse()
 

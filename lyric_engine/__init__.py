@@ -177,12 +177,13 @@ if __name__ == '__main__':
         
                 
     def getLyric():
-        index = 'kget'
+        index = 'utaten'
         url = get_test_url(index)
         print url
         engine = Lyric(url)
         lyric = engine.get_lyric()
-        print(repr(lyric))
+        print lyric
+#         print(repr(lyric))
 
     getLyric()
 
