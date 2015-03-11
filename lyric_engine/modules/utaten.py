@@ -6,6 +6,7 @@ sys.path.append(include_dir)
 
 import logging
 import re
+import requests
 import common
 from lyric_base import LyricBase
 
@@ -21,9 +22,11 @@ class UtaTen(LyricBase):
 
         logging.debug('url is [%s]', url)
         try:
-            logging.debug('mark')
-            content = self.get_lyric_content(url)
-            logging.debug('mark')
+            logging.debug('bef requests')
+#             content = self.get_lyric_content(url)
+            r = requests.get(url)
+            r.encoding = 'utf-8'
+            content = r.text
         except Exception as e:
             logging.error('Failed to get lyric content of url [%s]', url)
             logging.info('strerror: [%s]', e.strerror)
@@ -50,7 +53,7 @@ class UtaTen(LyricBase):
         return content
 
     def find_lyric(self, content):
-        content = content.decode('utf-8', 'ignore')
+#         content = content.decode('utf-8', 'ignore')
 
         prefix = '<div class="lyricBody">'
         suffix = '</div>'
@@ -67,7 +70,7 @@ class UtaTen(LyricBase):
         return True
 
     def find_song_info(self, content):
-        content = content.decode('utf-8', 'ignore')
+#         content = content.decode('utf-8', 'ignore')
 
         pattern = u'<meta property="og:title" content="(.*?)　歌詞 \|'
         title = common.get_first_group_by_pattern(content, pattern)
@@ -109,4 +112,5 @@ if __name__ == '__main__':
     if not full:
         print('Failed to get lyric')
         exit()
+#     print(full)
     print(full.encode('utf-8', 'ignore'))
