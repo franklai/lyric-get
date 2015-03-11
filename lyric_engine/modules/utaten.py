@@ -21,7 +21,7 @@ class UtaTen(LyricBase):
         url = self.url
 
         proxy = {
-            'http': 'http://174.6.79.50:3128'
+            'http': 'http://86.107.110.73:8089'
         }
         r = requests.get(url, proxies=proxy)
         if r.status_code != 200:
