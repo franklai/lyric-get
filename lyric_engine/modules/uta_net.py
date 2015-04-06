@@ -107,13 +107,40 @@ def get_lyric(url):
 
     return obj.get()
 
+def download_search_result():
+    url = 'http://www.uta-net.com/search/?Aselect=1&Bselect=3&Keyword=KOKIA&sort=6'
+    output = 'uta_net.search.txt'
+
+    html = common.get_url_content(url)
+    if not html:
+        logging.error('Failed to download url [%s]' % (url, ))
+        return False
+
+    pattern = '<td class="side td1"><a href="([^"]+)">'
+
+    import re
+    import urlparse
+    songs = re.findall(pattern, html)
+
+    out = open(output, 'wb')
+    for song in songs:
+        print song
+        song_url = urlparse.urljoin(site_url, song)
+        full = get_lyric(song_url)
+
+        out.write(full.encode('utf-8'))
+        out.write('\n\n=====\n')
+
+    out.close()
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
+    download_search_result()
+    exit()
+
     url = 'http://www.uta-net.com/song/181206/'
 
-#     obj = UtaNet(url)
-#     full = obj.get()
     full = get_lyric(url)
     if not full:
         print('damn !')
