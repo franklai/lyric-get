@@ -78,21 +78,21 @@ class KasiTime(LyricBase):
             logging.error('Failed to find title of url [%s]', url)
             ret = False
 
-        prefix = '<div id="song_info_table">'
+        prefix = '<div class="person_list">'
         suffix = '</div>'
         info_table = common.find_string_by_prefix_suffix(html, prefix, suffix)
 
         patterns = {
             'artist': u'歌手',
-            'lyricist': u'作詞',
-            'composer': u'作曲',
-            'arranger': u'編曲',
+            'lyricist': u'作詞者',
+            'composer': u'作曲者',
+            'arranger': u'編曲者',
         }
 
         for key in patterns:
             pattern = patterns[key]
 
-            prefix = u'<td class="td1">%s</td>' % (pattern)
+            prefix = u'<th>%s</th>' % (pattern)
             suffix = '</td>'
 
             value = common.find_string_by_prefix_suffix(info_table, prefix, suffix, False)
