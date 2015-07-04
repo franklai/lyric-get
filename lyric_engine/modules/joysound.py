@@ -13,8 +13,7 @@ site_class = 'JoySound'
 site_index = 'joysound'
 site_keyword = 'joysound'
 site_url = 'http://joysound.com/'
-test_url = 'http://joysound.com/ex/search/karaoke/_selSongNo_28721_songwords.htm'
-test_expect_length = 1551
+test_url = 'https://www.joysound.com/web/search/song/26613'
 
 class JoySound(LyricBase):
     def parse_page(self):
@@ -42,23 +41,20 @@ class JoySound(LyricBase):
         return True
 
     def get_song_id(self, url):
-        pattern = '/ex/search/karaoke/_selSongNo_([0-9]+)_songwords.htm'
+        pattern = '/song/([0-9]+)'
         song_id = common.get_first_group_by_pattern(url, pattern)
 
         return song_id
 
-    def get_referer(self, song_id):
-        pattern = 'http://joysound.com/ex/search/karaoke/_selSongNo_%s_songwords.htm'
-        return pattern % (song_id, )
-
     def get_song_json(self, song_id):
-        json_url = 'http://joysound.com/ex/api/lyrics/_getLyrics.htm'
-        post_data = 'sno=%s' % (song_id, )
+        json_url = 'https://mspxy.joysound.com/Common/Lyric'
+        post_data = 'kind=naviGroupId&selSongNo=%s&interactionFlg=0&apiVer=1.0' % (song_id, )
         headers = {
-            'Referer': self.get_referer(song_id)
+            'X-JSP-APP-NAME': '0000800'
         }
 
         json_str = common.get_url_content(json_url, post_data, headers)
+
         if not json_str:
             logging.info('Failed to get json from url [%s]', url)
             return False
@@ -68,12 +64,16 @@ class JoySound(LyricBase):
         return obj
 
     def parse_lyric(self, json_obj):
-        if 'kasi' not in json_obj:
-            logging.info('No "kasi" in song JSON')
+        if 'lyricList' not in json_obj:
+            logging.info('No "lyricList" in song JSON')
             return False
 
-        value = json_obj['kasi'].replace('<br>', '\r\n')
-        value = common.unicode2string(value)
+        lyricList = json_obj['lyricList']
+        if len(lyricList) < 1:
+            logging.info('"lyricList" length < 1')
+            return False
+
+        value = lyricList[0]['lyric']
         value = value.strip()
 
         self.lyric = value
@@ -82,9 +82,9 @@ class JoySound(LyricBase):
 
     def parse_song_info(self, json_obj):
         patterns = {
-            'title': 'song_disp_str',
-            'artist': 'singer_disp',
-            'lyricist': 'songwriter',
+            'title': 'songName',
+            'artist': 'artistName',
+            'lyricist': 'lyricist',
             'composer': 'composer',
         }
 
