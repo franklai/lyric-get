@@ -36,7 +36,7 @@ class LyricBase:
         if self.arranger:
             template.append(u'編曲：%s' % (self.arranger))
 
-        if len(template) > 0:
+        if len(template) > 2:
             template.append('')
             template.append('')
         template.append(self.lyric)

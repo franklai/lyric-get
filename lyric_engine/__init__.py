@@ -177,12 +177,12 @@ if __name__ == '__main__':
         
                 
     def getLyric():
-        index = 'utaten'
+        index = 'animationsong'
         url = get_test_url(index)
         print url
         engine = Lyric(url)
         lyric = engine.get_lyric()
-        print lyric
+        print lyric.encode('utf-8', 'ignore')
 #         print(repr(lyric))
 
     getLyric()

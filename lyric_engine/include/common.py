@@ -61,6 +61,9 @@ def strip_tags(input):
 def strip_slash(input):
     return re.sub(r'\\(.)', r'\1', input)
 
+def to_one_line(input):
+    return re.sub(r'[\r\n]', '', input)
+
 def get_first_group_by_pattern(input, pattern):
     output = ''
     logging.debug('pattern [%s]' % (pattern, ))
