@@ -94,6 +94,7 @@ class KasiTime(LyricBase):
             value = common.find_string_by_prefix_suffix(info_table, prefix, suffix, False)
             if not value:
                 continue
+            value = value.replace('\t', '').replace('\n', '')
             value = common.strip_tags(value).strip()
             if value:
                 setattr(self, key, value)
