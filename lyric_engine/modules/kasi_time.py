@@ -22,36 +22,36 @@ class KasiTime(LyricBase):
     def parse_page(self):
         url = self.url
 
-        if not self.find_lyric(url):
+        html = self.get_html(url)
+        if not html:
+            logging.error('Failed to get html of url [%s]', url)
+            return False
+
+        if not self.find_lyric(html):
             logging.error('Failed to get lyric of url [%s]', url)
             return False
 
-        if not self.find_song_info(url):
+        if not self.find_song_info(html):
             logging.info('Failed to get song info of url [%s]', url)
 
         return True
 
-    def find_lyric(self, url):
-        pattern = 'item-([0-9]+)\.html'
-
-        song_id = common.get_first_group_by_pattern(url, pattern)
-
-        if not song_id:
-            logging.info('Failed to get id of url [%s]', url)
-            return False
-
-        song_url = 'http://www.kasi-time.com/item_js.php?no=' + song_id
-        data = common.get_url_content(song_url)
+    def get_html(self, url):
+        data = common.get_url_content(url)
         if not data:
-            logging.info('Failed to get content of url [%s]', song_url)
+            logging.info('Failed to get content of url [%s]', url)
             return False
 
-        lyric = data.decode('utf-8', 'ignore')
-        lyric = lyric.replace("document.write('", "")
-        lyric = lyric.replace("');", "")
+        html = data.decode('utf-8', 'ignore')
+
+        return html
+
+    def find_lyric(self, html):
+        prefix = "var lyrics = '"
+        suffix = "';"
+        lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
         lyric = lyric.replace("<br>", "\n")
         lyric = lyric.replace("&nbsp;", " ")
-        lyric = common.htmlspecialchars_decode(lyric)
         lyric = common.unicode2string(lyric)
         lyric = common.strip_slash(lyric)
         lyric = lyric.strip()
@@ -63,12 +63,8 @@ class KasiTime(LyricBase):
 
         return True
 
-    def find_song_info(self, url):
+    def find_song_info(self, html):
         ret = True
-        html = common.get_url_content(url)
-
-        encoding = 'utf-8'
-        html = html.decode(encoding, 'ignore')
 
         pattern = '<h1>(.*)</h1>'
         value = common.get_first_group_by_pattern(html, pattern).strip()
