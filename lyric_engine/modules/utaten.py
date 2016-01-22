@@ -21,20 +21,12 @@ class UtaTen(LyricBase):
     def parse_page(self):
         url = self.url
 
-        path = url.replace(site_url, '/')
-        encoded = base64.b64encode(path)
-        csie_url = 'http://www.csie.ntu.edu.tw/~b91072/php/lyric_get_helper/get_utaten.php?id=%s&token=token' % (encoded)
-
-#         proxy = {
-#             'http': 'http://86.107.110.73:8089'
-#         }
-        r = requests.get(csie_url)
+        r = requests.get(url)
         if r.status_code != 200:
             logging.info('Cannot get content of url [%s], status code [%d]', url, r.status_code)
             logging.debug('headers: [%s]', r.headers)
             return False
 
-        logging.debug('headers: [%s]', r.headers)
         r.encoding = 'utf-8'
         content = r.text
 
@@ -59,8 +51,6 @@ class UtaTen(LyricBase):
         return content
 
     def find_lyric(self, content):
-#         content = content.decode('utf-8', 'ignore')
-
         prefix = '<div class="lyricBody">'
         suffix = '</div>'
 
@@ -78,7 +68,7 @@ class UtaTen(LyricBase):
     def find_song_info(self, content):
 #         content = content.decode('utf-8', 'ignore')
 
-        pattern = u'<meta property="og:title" content="(.*?)　歌詞 \|'
+        pattern = u'<meta property="og:title" content="(.*?)　歌詞【'
         title = common.get_first_group_by_pattern(content, pattern)
         title = common.htmlspecialchars_decode(title)
         self.title = title
