@@ -5,11 +5,6 @@ include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'i
 sys.path.append(include_dir)
 
 import logging
-import time
-try:
-    import zlib
-except:
-    pass
 import common
 from lyric_base import LyricBase
 
@@ -40,86 +35,25 @@ class KashiNavi(LyricBase):
             logging.error('Failed to get id of url [%s]', url)
             return False
 
-        params = self.get_hidden_params()
-
-        query = '%s%s&time=%s' % (params['query_prefix'], song_id, time.localtime(), )
-        logging.debug('query:%s' % (query, ))
-
-        post_url = 'http://www.kashinavi.com/cgi-bin/kashi.cgi'
-        resp = common.get_url_content(post_url, query)
+        kashi_url = 'http://kashinavi.com/s/kashi.php?no=%s' % (song_id, )
+        resp = common.get_url_content(kashi_url)
         if not resp:
-            logging.error('Failed to get content of url [%s], query [%s]', post_url, query)
+            logging.error('Failed to get content of url [%s]', kashi_url)
             return False
 
-        raw_lyric = resp.decode('utf-8', 'ignore')
+        text = resp.decode('sjis', 'ignore')
 
-        # if parsing rule changed, return debug info
-        if raw_lyric.find(u'歌詞ナビTOPページより') > 0:
-            self.lyric = '''
-Site rule changed!
-Please contact franklai
-LoadVars::%s::myLoadVars
-''' % (params['middle_value'])
-            return True
-        
-        # else remove the useless part and return lyric
-        front_str = 'kashi='
-        start = raw_lyric.find(front_str) + len(front_str)
-        lyric = raw_lyric[start:]
+        prefix = ";'>"
+        suffix = '")'
+
+        lyric = common.find_string_by_prefix_suffix(text, prefix, suffix, False)
+        lyric = lyric.replace('<br>', '\n')
+        lyric = common.strip_tags(lyric)
         lyric = lyric.strip()
 
         self.lyric = lyric
 
         return True
-
-    def get_hidden_params(self):
-        """ get new hidden parameters of kashinavi. need zlib support. """ 
-        url = 'http://www.kashinavi.com/song_view.swf'
-
-        # add random value to avoid Google cache old value
-        url = '%s?time=%.0f' % (url, time.time())
-        logging.debug('url:%s' % (url, ))
-
-        data = common.get_url_content(url)
-
-        if data[0:3] == 'CWS':
-            # compressed swf
-            compressed_str = data[8:]
-            uncompressed_str = zlib.decompress(compressed_str)
-        elif data[0:3] == 'FWS':
-            # uncompressed swf
-            uncompressed_str = data
-        else:
-            # not valid swf, just return
-            return
-
-        prefix = '\0LoadVars\0'
-        suffix = '\0myLoadVars'
-
-        u = uncompressed_str 
-        m = u[u.find(prefix)+len(prefix): u.find(suffix)]
-        items = m.split('\0')
-
-        para_name = 'something'
-        para_value = 'is'
-        # wrong
-
-        if len(items) == 3:
-            target_name = items[1]
-            target_value = items[2]
-            
-        middle_value = m.replace('\0', ' ')
-
-        query_prefix = '%s=%s&file_no=' % (target_name, target_value,)
-
-        para = {
-            'query_prefix': query_prefix,
-            'middle_value': middle_value,
-        }
-
-        logging.debug('query_prefix:%s' % (query_prefix, ))
-
-        return para
 
     def find_song_info(self, url):
         ret = True
