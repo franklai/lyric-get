@@ -53,6 +53,7 @@ class KasiTime(LyricBase):
         lyric = lyric.replace("<br>", "\n")
         lyric = lyric.replace("&nbsp;", " ")
         lyric = common.unicode2string(lyric)
+        lyric = common.htmlspecialchars_decode(lyric)
         lyric = common.strip_slash(lyric)
         lyric = lyric.strip()
 
