@@ -52,8 +52,8 @@ class KasiTime(LyricBase):
         lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
         lyric = lyric.replace("<br>", "\n")
         lyric = lyric.replace("&nbsp;", " ")
-        lyric = common.unicode2string(lyric)
         lyric = common.htmlspecialchars_decode(lyric)
+        lyric = common.unicode2string(lyric)
         lyric = common.strip_slash(lyric)
         lyric = lyric.strip()
 
@@ -97,6 +97,8 @@ class KasiTime(LyricBase):
                 continue
             value = value.replace('\t', '').replace('\n', '')
             value = common.strip_tags(value).strip()
+            value = common.htmlspecialchars_decode(value)
+            value = common.unicode2string(value)
             if value:
                 setattr(self, key, value)
 
