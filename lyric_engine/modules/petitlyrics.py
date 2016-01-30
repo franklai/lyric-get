@@ -51,7 +51,7 @@ class PetitLyrics(LyricBase):
         if not html:
             logging.info('Failed to get html of url [%s]' % (url))
             return False
-        lyric_1st = self.get_lyric_1st_part(html)
+#         lyric_1st = self.get_lyric_1st_part(html)
 
         # 2. get CSRF token
         token = self.get_csrf_token(html)
@@ -62,7 +62,8 @@ class PetitLyrics(LyricBase):
 
         # 2. get second part lyric
         lyric_2nd = self.get_lyric_2nd_part(id, token, plsession)
-        self.lyric = common.htmlspecialchars_decode(lyric_1st + lyric_2nd)
+#         self.lyric = common.htmlspecialchars_decode(lyric_1st + lyric_2nd)
+        self.lyric = common.htmlspecialchars_decode(lyric_2nd)
 
         self.parse_artist_title(html)
         self.parse_lyricist(html)
@@ -111,12 +112,11 @@ class PetitLyrics(LyricBase):
 
         return token
 
-    def get_lyric_2nd_part(self, id, token, plsession):
+    def get_lyric_raw_json_by_csie(self, id, token, plsession):
         if not id:
             return None
 
         actionUrl = 'http://www.csie.ntu.edu.tw/~b91072/php/lyric_get_helper/get_petitlyrics_2nd.php'
-#         actionUrl = 'http://petitlyrics.com/com/get_lyrics.ajax'
         payload = {
             'id': id,
             'token': token,
@@ -124,7 +124,41 @@ class PetitLyrics(LyricBase):
         }
 
         r = self.s.get(actionUrl, params=payload)
+        if r.status_code != 200:
+            return None
+
         obj = r.json()
+
+        return obj
+
+    def get_lyric_raw_json(self, id, token, plsession):
+        if not id:
+            return None
+
+        actionUrl = 'http://petitlyrics.com/com/get_lyrics.ajax'
+        headers = {
+            'X-CSRF-Token': token,
+            'Cookie': 'PLSESSION=%s' % (plsession, ),
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+        payload = {
+            'lyrics_id': id,
+        }
+
+        r = self.s.post(actionUrl, data=payload, headers=headers)
+        if r.status_code != 200:
+            return None
+
+        obj = r.json()
+
+        return obj
+
+    def get_lyric_2nd_part(self, id, token, plsession):
+        if not id:
+            return None
+        
+        obj = self.get_lyric_raw_json_by_csie(id, token, plsession)
+#         obj = self.get_lyric_raw_json(id, token, plsession)
 
         lyric_list = []
         for item in obj:
@@ -183,6 +217,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     url = test_url
+    url = 'http://petitlyrics.com/lyrics/1175487'
 
     full = get_lyric(url)
     if not full:
