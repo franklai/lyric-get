@@ -130,6 +130,8 @@ if __name__ == '__main__':
 <br />
 I&#039;m so lonely.
 R &amp; B
+&quot;NO&quot;
+&lt;hr&gt;
 """
     print(unicode2string(text))
 
