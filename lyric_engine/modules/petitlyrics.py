@@ -127,7 +127,11 @@ class PetitLyrics(LyricBase):
         if r.status_code != 200:
             return None
 
-        obj = r.json()
+        print(r.text)
+        try:
+            obj = r.json()
+        except:
+            return None
 
         return obj
 
@@ -218,6 +222,8 @@ if __name__ == '__main__':
 
     url = test_url
     url = 'http://petitlyrics.com/lyrics/1175487'
+    url = 'http://petitlyrics.com/lyrics/1015689'
+    url = 'http://petitlyrics.com/lyrics/34690'
 
     full = get_lyric(url)
     if not full:
