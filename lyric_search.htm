@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Lyric Search</title>
+
+<style type="text/css">
+body {
+font-size: 90%;
+}
+div {
+clear: both;
+}
+#checkboxDiv a {
+padding: 3px;
+margin-right: 10px;
+border: 1px solid transparent;
+}
+#checkboxDiv a:hover {
+background: #EEE;
+border: 1px solid navy;
+}
+#checkboxDiv div {
+margin-top: 2px;
+}
+label {
+margin-right: 6px;
+border: 1px solid transparent;
+padding: 2px;
+}
+label:hover {
+cursor: pointer;
+border: 1px solid navy;
+background: #EEE;
+}
+#searchWord {
+border: 1px solid #00C;
+width: 30%;
+}
+#searchWord:focus {
+background: #EEE;
+border: 1px solid navy;
+}
+#iframeDiv iframe {
+border: 1px solid black;
+width: 98%;
+height: 600px;
+margin: 1px;
+display: none;
+}
+
+#container {
+width: 900px;
+margin: 0 auto;
+}
+#checkboxDiv {
+width: 98%;
+margin: 0 auto;
+}
+#inputDiv {
+width: 98%;
+margin: 0 auto;
+}
+#ta {
+width: 98%;
+height: 300px;
+}
+</style>
+
+<script type="text/javascript">
+window.onload = init;
+
+String.prototype.trim = function() {
+    return(this.replace(/^\s+/,'').replace(/\s+$/,''));
+}
+
+function $(name)
+{
+    return document.getElementById(name);
+}
+
+function keypress_handler(e)
+{
+    e = (!e)? window.event: e;
+    if (e.keyCode == 13){ // 13 means Enter (Carriage Return)
+        $("searchButton").click();
+        return false;
+    }
+}
+
+function init()
+{
+    $("selectAll").onclick = select_all_checkbox;
+    $("selectNone").onclick = select_none_checkbox;
+
+    $("searchButton").onclick = search_selected;
+    $("searchWord").onkeypress = keypress_handler;
+}
+
+function select_all_checkbox(e)
+{
+    var inputs = document.getElementsByTagName("input");
+    
+    for (var x = 0; x < inputs.length; x++){
+        var input = inputs[x];
+        if (input.type == "checkbox"){
+            input.checked = "checked";
+        }
+    }
+}
+function select_none_checkbox(e)
+{
+    var inputs = document.getElementsByTagName("input");
+    
+    for (var x = 0; x < inputs.length; x++){
+        var input = inputs[x];
+        if (input.type == "checkbox"){
+            input.checked = "";
+        }
+    }
+}
+
+
+// I forgot there is a possiblility of action POST
+// in the current code (2008 Jan 10), there is no way to send POST request.
+function search_selected(e)
+{
+    // first, find out which sites need to be searched
+    var selected = get_all_checked();
+    
+    // prepare iframes
+    var iframes = document.getElementsByTagName("iframe");
+    for (var x = 0; x < iframes.length; x++){
+        iframes[x].style.display = "none";
+    }
+
+    // error check
+    // the number of selected lyric sites cannot exceed # of iframes
+    if (selected.length > iframes.length){
+        window.alert("error: not enough iframe elements.");
+        return false;
+    }
+
+    // for encoding problem, we need a form to send request
+    var form = $("form1");
+
+    // get user input parameters
+    var query_word = get_query_word();
+    var query_type = get_query_type();
+
+    // no query word, no response
+    if (query_word == ""){
+        return false;
+    }
+    // no query_type, ask user to select
+    if (query_type == false){
+        window.alert("error: please choose search type.");
+        return false;
+    }
+
+
+    // get parameters of lyric sites
+    // and set to iframe
+    var para_array = ["url", "type", "artist", "title", "query", "suffix", "encoding"];
+    var values = new Array();
+    for (var x = 0; x < selected.length; x++){
+    //for (var x = 0; x < 2; x++){
+        var site = selected[x];
+        for (var index in para_array){
+            var parameter = para_array[index];
+            values[parameter] = site.getAttribute("p_"+parameter);
+        }
+        // reset the method
+        form.method = "GET";
+
+        // "%s?%s=%s&%s=%s&%s" % (url, type, query_type, query, query_word, suffix)
+        var query_str = values["type"]+"="+values[query_type]
+                        +"&"+values["query"]+"="+query_word
+                        +"&"+values["suffix"];
+        if (values["type"].substr(0, 1) == "_"){
+            // may change method (GET, POST)
+            query_str = eval("get_"+values["type"].substr(1)+"_parameter(values, query_type, query_word)");
+        }
+
+        generate_hidden_elements(query_str);
+        form.action = values["url"];
+        form.target = "i"+x;
+
+        // change encoding
+        // acceptCharset for Firefox/W3C, charset for IE
+        form.acceptCharset = values["encoding"];
+        if (document.charset) {
+            // for IE
+            document.charset = values["encoding"];
+        }
+
+        form.submit();
+        iframes[x].style.display = "block";
+    }
+}
+
+function generate_hidden_elements(query_str)
+{
+    // parse the search string
+    // clear hiddenDiv
+    // dynamically generate hidden elements
+    var hiddenDiv = $("hiddenDiv");
+    
+    // remove all child of hidden div
+    while (hiddenDiv.hasChildNodes()){
+        hiddenDiv.removeChild(hiddenDiv.childNodes.item(0));
+    }
+    
+    // parse and append child
+    var pattern = "(([a-z]|[A-Z]|_)+)=(([^&]*)*)";
+    var urlRegExp = new RegExp(pattern, "g");
+    var source = query_str;
+    var result = null;
+    
+    while ((result = urlRegExp.exec(source)) != null){
+        var tempObj = document.createElement("input");
+        tempObj.setAttribute("type", "hidden");
+        tempObj.setAttribute("name", result[1]);
+        tempObj.setAttribute("value", result[3]);
+        
+        hiddenDiv.appendChild(tempObj);
+    }
+}
+
+function get_kget_parameter(values, query_type, query_word)
+{
+    var artist_query = "";
+    var title_query = "";
+
+    if (query_type == "artist"){
+        artist_query = query_word;
+    }
+    else {
+        title_query = query_word;
+    }
+
+    var query_url = values["suffix"]
+                    +"&"+values["artist"]+"="+artist_query
+                    +"&"+values["title"]+"="+title_query;
+
+    return query_url;
+}
+
+function get_anicashi_parameter(values, query_type, query_word)
+{
+    var artist_query = "";
+    var title_query = "";
+
+    if (query_type == "artist"){
+        artist_query = query_word;
+    }
+    else {
+        title_query = query_word;
+    }
+
+    var query_url = values["suffix"]
+                    +"&"+values["artist"]+"="+artist_query
+                    +"&"+values["title"]+"="+title_query;
+
+    var form = $("form1");
+    form.method = "POST";
+    
+    return query_url;
+}
+
+function get_all_checked()
+{
+    var inputs = document.getElementsByTagName("input");
+    var cbs = new Array();
+    
+    for (var x = 0; x < inputs.length; x++){
+        var input = inputs[x];
+        if (input.type == "checkbox" && input.checked){
+            cbs.push(input);
+        }
+    }
+
+    return cbs;
+}
+
+function get_query_word()
+{
+    var str = $("searchWord").value;
+    return str.trim();
+}
+
+function get_query_type()
+{
+    var t_artist = $("rArtist");
+    var t_title = $("rTitle");
+
+    if (t_artist.checked){
+        return t_artist.value;
+    }
+    else if (t_title.checked){
+        return t_title.value;
+    }
+
+    return false;
+}
+
+</script>
+
+</head>
+<body lang="ja">
+<div id="container">
+
+<div id="checkboxDiv">
+<div>
+    <input type="checkbox" checked="checked"
+     p_url="http://www.utamap.com/searchkasi.php" p_encoding="Shift_JIS"
+     p_type="searchname" p_artist="artist" p_title="title"
+     p_query="word" p_suffix="act=search&sortname=3&pattern=3"/>
+    <a href="http://www.utamap.com/" target="_blank">うたまっぷ</a>
+
+    <input type="checkbox" checked="checked"
+     p_url="http://www.uta-net.com/user/ichiran.html" p_encoding="Shift_JIS"
+     p_type="Aselect" p_artist="1" p_title="2"
+     p_query="Keyword" p_suffix="Bselect=3&Cselect=1"/>
+    <a href="http://www.uta-net.com/" target="_blank">Uta-Net</a>
+
+    <input type="checkbox" checked="checked"
+     p_url="http://www.kashinavi.com/search.php" p_encoding="Shift_JIS"
+     p_type="r" p_artist="kashu" p_title="kyoku"
+     p_query="search" p_suffix="m=&start=1"/>
+    <a href="http://www.kashinavi.com/" target="_blank">歌詞ナビ</a>
+
+<!-- special function needed -->
+    <input type="checkbox" checked="checked"
+     p_url="http://www2.kget.jp/result/index.aspx" p_encoding="Shift_JIS"
+     p_type="_kget" p_artist="a" p_title="t"
+     p_query="" p_suffix="c=0&b=&f=&x=0&y=0"/>
+    <a href="http://www2.kget.jp/" target="_blank">歌詞GET</a>
+
+    <input type="checkbox" checked="checked"
+     p_url="http://www.kasi-time.com/search.php" p_encoding="euc-jp"
+     p_type="cat_index" p_artist="uta" p_title="song"
+     p_query="keyword" p_suffix=""/>
+    <a href="http://www.kasi-time.com/" target="_blank">歌詞タイム</a>
+</div>
+
+<div>
+<!--
+http://search.music.yahoo.co.jp/
+musicsearch?cc=ls&n1=a&cp=%BA%E4%CB%DC%BF%BF%B0%BD
+
+musicsearch?cc=ls&n1=t&cp=tune+the+rainbow
+-->
+    <input type="checkbox" checked="checked"
+     p_url="http://search.music.yahoo.co.jp/musicsearch" p_encoding="euc-jp"
+     p_type="n1" p_artist="a" p_title="t"
+     p_query="cp" p_suffix="cc=ls"/>
+    <a href="http://music.yahoo.co.jp/lyrics/" target="_blank">Yahoo!ミュージック - 歌詞</a>
+
+    <input type="checkbox" checked="checked"
+     p_url="http://www.evesta.jp/lyric/search.php" p_encoding="utf-8"
+     p_type="o" p_artist="a" p_title="t"
+     p_query="k" p_suffix=""/>
+    <a href="http://www.evesta.jp/lyric/" target="_blank">イベスタ歌詞とる</a>
+
+    <input type="checkbox" checked="checked"
+     p_url="http://music.goo.ne.jp/lyric/search.php" p_encoding="euc-jp"
+     p_type="t" p_artist="1" p_title="2"
+     p_query="n" p_suffix="lyric=%B2%CE%BB%EC%B8%A1%BA%F7"/>
+    <a href="http://music.goo.ne.jp/lyric/" target="_blank">歌詞情報 - goo音楽</a>
+</div>
+
+<div>
+    <input type="checkbox"
+     p_url="http://anison.kenichimaehashi.com/search.cgi" p_encoding="euc-jp"
+     p_type="in" p_artist="artist" p_title="title"
+     p_query="keyword" p_suffix="page=0"/>
+    <a href="http://anison.kenichimaehashi.com/" target="_blank">アニソン★歌詞検索</a>
+
+<!--
+http://joysound.com/ex/search/songsearchword.htm
+?karaokeall=1
+&wiiall=1
+&keitaiall=1
+&searchType=01
+&searchWord=tune%20the%20rainbow
+&searchWordType=2
+&searchLikeType=2
+
+http://joysound.com/ex/search/artistsearchword.htm?karaokeall=1
+&wiiall=1
+&keitaiall=1
+&searchType=01
+&searchWord=%E5%9D%82%E6%9C%AC%E7%9C%9F%E7%B6%BE
+&searchWordType=1
+&searchLikeType=2
+
+-->
+    <input type="checkbox"
+     p_url="http://joysound.com/ex/search/songsearchword.htm" p_encoding="utf-8"
+     p_type="searchWordType" p_artist="1" p_title="2"
+     p_query="searchWord" p_suffix="searchLikeType=2&searchType=01&keitaiall=1&wiiall=1&karaokeall=1"/>
+    <a href="http://joysound.com/" target="_blank">JOYSOUND.com</a>
+
+<!--
+http://petitlyrics.com/search/searchLyrics.php?
+search_type=1&swd=tune%20the%20rainbow
+-->
+    <input type="checkbox"
+     p_url="http://petitlyrics.com/search/searchLyrics.php" p_encoding="utf-8"
+     p_type="search_type" p_artist="2" p_title="1"
+     p_query="swd" p_suffix=""/>
+    <a href="http://petitlyrics.com/" target="_blank">PetitLyrics</a>
+
+<!--
+http://atsound.jp/a/search/result_list.php
+?cont_type=text&search_word=tune+the+rainbow&search_opt=title&btn_submit=%8C%9F%8D%F5
+
+ttp://atsound.jp/a/search/result_list.php
+?cont_type=text&search_word=coorie&search_opt=artist&btn_submit=%8C%9F%8D%F5
+-->
+    <input type="checkbox"
+     p_url="http://atsound.jp/a/search/result_list.php" p_encoding="Shift_JIS"
+     p_type="search_opt" p_artist="artist" p_title="title"
+     p_query="search_word" p_suffix="cont_type=text"/>
+    <a href="http://atsound.jp/" target="_blank">@sound</a>
+
+<input type="button" id="selectAll" value="Select All" />
+<input type="button" id="selectNone" value="Select None" />
+</div>
+</div>
+
+<div id="inputDiv">
+<fieldset>
+    <legend>Lyric Search</legend>
+    <input type="radio" id="rArtist" name="type" value="artist" checked="checked"/>
+    <label for="rArtist">歌手</label>
+    <input type="radio" id="rTitle" name="type" value="title"/>
+    <label for="rTitle">曲名</label>
+    
+<input type="text" id="searchWord" value="下川みくに" />
+<input type="button" id="searchButton" value="Search" />
+</fieldset>
+</div>
+
+<div id="noteDiv">
+When the query string is something other than ASCII,
+IE may not produce correct query result.
+</div>
+
+<div id="formDiv">
+<form id="form1" method="get">
+<div id="hiddenDiv"></div>
+</form>
+</div>
+
+<div id="iframeDiv">
+<iframe id="i0" name="i0"></iframe>
+<iframe id="i1" name="i1"></iframe>
+<iframe id="i2" name="i2"></iframe>
+<iframe id="i3" name="i3"></iframe>
+<iframe id="i4" name="i4"></iframe>
+<iframe id="i5" name="i5"></iframe>
+<iframe id="i6" name="i6"></iframe>
+<iframe id="i7" name="i7"></iframe>
+<iframe id="i8" name="i8"></iframe>
+<iframe id="i9" name="i9"></iframe>
+<iframe id="i10" name="i10"></iframe>
+<iframe id="i11" name="i11"></iframe>
+</div>
+
+</div>
+</body>
+</html>
