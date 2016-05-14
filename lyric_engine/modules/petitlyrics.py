@@ -9,7 +9,7 @@ import json
 import logging
 import urlparse
 import common
-import requests
+import urllib3
 from lyric_base import LyricBase
 
 site_class = 'PetitLyrics'
@@ -33,56 +33,41 @@ class PetitLyrics(LyricBase):
     def parse_page(self):
         url = self.url
 
-        s = requests.Session()
-        self.s = s
-
         # 1. get song id from url
         id = self.get_song_id(url)
         if not id:
             logging.error('Failed to get id of url [%s]', url)
             return False
+        
+        # 2. get html
+        r = self.request_by_url(url)
+        html = r.data
 
-        r = s.get(url)
-
-        plsession = r.cookies['PLSESSION']
-
-        # 2. get 1st part lyric from html and song_info
-        html = r.text
         if not html:
             logging.info('Failed to get html of url [%s]' % (url))
             return False
-#         lyric_1st = self.get_lyric_1st_part(html)
+        html = html.decode('utf-8', 'ignore')
 
-        # 2. get CSRF token
+        # 3. get CSRF token
         token = self.get_csrf_token(html)
         if not token:
             logging.info('Failed to get CSRF token of url [%s]' % (url))
             return False
         logging.debug('CSRF token is %s' % (token, ))
 
-        # 2. get second part lyric
-        lyric_2nd = self.get_lyric_2nd_part(id, token, plsession)
-#         self.lyric = common.htmlspecialchars_decode(lyric_1st + lyric_2nd)
-        self.lyric = common.htmlspecialchars_decode(lyric_2nd)
+        # 5. get lyric
+        lyric = self.get_lyric(id, token)
+        if not lyric:
+            logging.info('Failed to get lyric of url [%s]' % (url))
+            return False
+
+        self.lyric = common.htmlspecialchars_decode(lyric.strip())
 
         self.parse_artist_title(html)
         self.parse_lyricist(html)
         self.parse_composer(html)
 
         return True
-
-    def get_lyric_1st_part(self, html):
-        prefix = '<canvas id="lyrics" '
-        suffix = '</canvas>'
-
-        rawLyric = common.get_string_by_start_end_string(prefix, suffix, html)
-        if not rawLyric:
-            logging.info('Failed to get lyric string')
-            return None
-        encodedLyric = common.strip_tags(rawLyric)
-        lyric_1st = common.unicode2string(encodedLyric)
-
-        return lyric_1st
 
     def get_song_id(self, url):
         if not url:
@@ -105,64 +90,41 @@ class PetitLyrics(LyricBase):
 
         url = urlparse.urljoin(site_url, pl_lib_js)
 
-        r = self.s.get(url)
+        content = self.get_content_by_url(url)
 
         pattern = "'X-CSRF-Token', '(.*?)'"
-        token = common.get_first_group_by_pattern(r.text, pattern)
+        token = common.get_first_group_by_pattern(content, pattern)
 
         return token
 
-    def get_lyric_raw_json_by_csie(self, id, token, plsession):
-        if not id:
-            return None
-
-        actionUrl = 'http://www.csie.ntu.edu.tw/~b91072/php/lyric_get_helper/get_petitlyrics_2nd.php'
-        payload = {
-            'id': id,
-            'token': token,
-            'plsession': plsession
-        }
-
-        r = self.s.get(actionUrl, params=payload)
-        if r.status_code != 200:
-            return None
-
-        print(r.text)
-        try:
-            obj = r.json()
-        except:
-            return None
-
-        return obj
-
-    def get_lyric_raw_json(self, id, token, plsession):
+    def get_lyric_raw_json(self, id, token):
         if not id:
             return None
 
         actionUrl = 'http://petitlyrics.com/com/get_lyrics.ajax'
         headers = {
             'X-CSRF-Token': token,
-            'Cookie': 'PLSESSION=%s' % (plsession, ),
             'X-Requested-With': 'XMLHttpRequest'
         }
         payload = {
             'lyrics_id': id,
         }
 
-        r = self.s.post(actionUrl, data=payload, headers=headers)
-        if r.status_code != 200:
+        content = self.get_content_by_url(actionUrl, payload, headers)
+        try:
+            obj = json.loads(content)
+        except:
             return None
-
-        obj = r.json()
 
         return obj
 
-    def get_lyric_2nd_part(self, id, token, plsession):
+    def get_lyric(self, id, token):
         if not id:
             return None
         
-        obj = self.get_lyric_raw_json_by_csie(id, token, plsession)
-#         obj = self.get_lyric_raw_json(id, token, plsession)
+        obj = self.get_lyric_raw_json(id, token)
+        if not obj:
+            return None
 
         lyric_list = []
         for item in obj:
@@ -211,6 +173,42 @@ class PetitLyrics(LyricBase):
             return False
 
         self.composer = common.htmlspecialchars_decode(common.unicode2string(raw_string)).strip()
+
+    def get_content_by_url(self, url, payload=None, headers=None):
+        r = self.request_by_url(url, payload, headers)
+
+        return r.data
+
+    def request_by_url(self, url, payload=None, headers=None):
+        if not hasattr(self, 'http'):
+            self.http = urllib3.PoolManager()
+
+        if hasattr(self, 'cookie'):
+            if not headers:
+                headers = {'Cookie': self.cookie}
+                logging.debug('no headers in params, set cookie to %s' % (self.cookie))
+            elif not hasattr(headers, 'Cookie'):
+                headers['Cookie'] = self.cookie
+                logging.debug('has headers params, set cookie to %s' % (self.cookie))
+            else:
+                logging.debug('## cookie in request headers')
+        else:
+            logging.debug('## no saved cookie')
+
+        if payload:
+            r = self.http.request_encode_body('POST', url, payload, headers, encode_multipart=False)
+        else:
+            r = self.http.request_encode_url('GET', url, payload, headers)
+
+        logging.debug('== == == == ==')
+        logging.debug('== request to url [%s]' % (url)) 
+
+        cookie = r.getheader('Set-Cookie')
+        if cookie:
+            self.cookie = cookie
+            logging.debug('Got Set-Cookie: %s from request to %s' % (cookie, url))
+
+        return r
 
 def get_lyric(url):
     obj = PetitLyrics(url)
