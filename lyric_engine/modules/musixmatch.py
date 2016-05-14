@@ -25,10 +25,18 @@ class MusixMatch(LyricBase):
             logging.error('Failed to get html of url [%s]', url)
             return False
 
+        logging.info(html)
+
         obj = self.find_json(html)
         if not obj:
-            logging.error('Failed to get json in html of url [%s]', url)
-            return False
+            msg = self.find_msg(html)
+            if not msg:
+                logging.error('Failed to get json in html of url [%s]', url)
+                return False
+            else:
+                # robot detect...
+                self.lyric = msg
+                return True
 
         if not self.find_lyric(obj):
             logging.error('Failed to get lyric of url [%s]', url)
@@ -49,6 +57,16 @@ class MusixMatch(LyricBase):
         html = data.decode('utf-8', 'ignore')
 
         return html
+
+    def find_msg(self, html):
+        prefix = '<h1 class="mxm-verify-headline">'
+        suffix = '</form>'
+
+        raw = common.find_string_by_prefix_suffix(html, prefix, suffix, True)
+        if not raw:
+            return False
+
+        return raw
 
     def find_json(self, html):
         prefix = 'var __mxmState = '
