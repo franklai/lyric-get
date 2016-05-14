@@ -43,11 +43,9 @@ class LyricWiki(LyricBase):
     def find_lyric(self, html):
         prefix = "<div class='lyricbox'>"
         suffix = '<!--'
-        line = common.find_string_by_prefix_suffix(html, prefix, suffix, True)
-
-        prefix = '</script>'
-        suffix = '<!--'
-        lyric = common.find_string_by_prefix_suffix(line, prefix, suffix, False)
+        lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
+        if not lyric:
+            return None
 
         lyric = lyric.replace('<br />', '\n')
         lyric = common.unicode2string(lyric).strip()
