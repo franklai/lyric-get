@@ -13,7 +13,7 @@ site_class = 'JTotal'
 site_index = 'j_total'
 site_keyword = 'j-total'
 site_url = 'http://music.j-total.net/'
-test_url = 'http://music.j-total.net/data/026ha/012_BUMP_OF_CHICKEN/014.html'
+test_url = 'http://music.j-total.net/data/026ha/053_Perfume/038.html'
 
 class JTotal(LyricBase):
     def parse_page(self):
@@ -62,18 +62,18 @@ class JTotal(LyricBase):
     def find_song_info(self, html):
         ret = True
 
-        prefix = '<font color="#FFFFFF"><b>'
+        prefix = '<font size="4" color="#FFFFFF"><b>'
         suffix = '</b></font>'
-        title = common.strip_tags(common.find_string_by_prefix_suffix(html, prefix, suffix)).strip()
-        if title:
+        value = common.find_string_by_prefix_suffix(html, prefix, suffix)
+        if value:
+            title = common.strip_tags(value).strip()
             self.title = title
 
-        prefix = '<font size="-1" color="#FFFFFF">'
+        prefix = '<font size="3" color="#FFFFFF">'
         suffix = '</font>'
         info = common.find_string_by_prefix_suffix(html, prefix, suffix)
         info = re.sub('     +', '', info)
         info = info.replace('\r', '').replace('\n', '')
-
 
         patterns = {
             'artist': u'歌：(.*?)/',
