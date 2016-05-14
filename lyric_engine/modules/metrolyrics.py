@@ -40,9 +40,13 @@ class MetroLyrics(LyricBase):
         return html
 
     def find_lyric(self, html):
-        prefix = '<div id="lyrics-body-text">'
-        suffix = '</div>'
+        prefix = '<div class="lyrics-body">'
+        suffix = '</sd-lyricbody>'
         rawLyric = common.get_string_by_start_end_string(prefix, suffix, html)
+        if not rawLyric:
+            return None
+
+        rawLyric = self.remove_noise(rawLyric)
 
         rawLyric = rawLyric.replace('<br />', '\n')
         rawLyric = rawLyric.replace("<p class='verse'>", '\n\n')
@@ -51,6 +55,24 @@ class MetroLyrics(LyricBase):
         self.lyric = rawLyric
 
         return True
+
+    def remove_noise(self, rawLyric):
+        items = [{
+            'prefix': '<div id="mid-song-discussion"',
+            'suffix': '<span class="label">See all</span>\n</a>\n</div>'
+        }, {
+            'prefix': '<p class="writers">',
+            'suffix': '</sd-lyricbody>'
+        }]
+
+        for item in items:
+            prefix = item['prefix']
+            suffix = item['suffix']
+            noise = common.get_string_by_start_end_string(prefix, suffix, rawLyric)
+            if noise:
+                rawLyric = rawLyric.replace(noise, '')
+
+        return rawLyric
 
     def find_song_info(self, html):
         ret = True
