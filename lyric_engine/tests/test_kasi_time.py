@@ -18,7 +18,7 @@ class KasiTimeTest(unittest.TestCase):
         self.assertEqual(obj.lyricist, u'Revo')
         self.assertEqual(obj.composer, u'Revo')
         self.assertEqual(obj.arranger, u'Revo')
-        self.assertEqual(len(obj.lyric), 808)
+        self.assertEqual(len(obj.lyric), 778)
 
     def test_url_shiranai(self):
         url = 'http://www.kasi-time.com/item-43855.html'

@@ -24,7 +24,7 @@ class SongTexteTest(unittest.TestCase):
 
         self.assertEqual(obj.title, u"Sweet Child o' Mine")
         self.assertEqual(obj.artist, u'Guns N’ Roses')
-        self.assertEqual(len(obj.lyric), 1123)
+        self.assertEqual(len(obj.lyric), 1066)
 
     def test_url_03(self):
         url = 'http://www.songtexte.com/songtext/bone-thugs-n-harmony-feat-mariah-carey-and-bow-wow/c-town-6ba75a7e.html'

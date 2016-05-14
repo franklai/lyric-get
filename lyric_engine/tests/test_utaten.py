@@ -24,7 +24,7 @@ class UtaTenTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'Charge &  Go!')
+        self.assertEqual(obj.title, u'Charge & Go!')
         self.assertEqual(obj.artist, u'AAA')
         self.assertEqual(obj.lyricist, u'Kenn Kato')
         self.assertEqual(obj.composer, u'TETSUYA KOMURO')
