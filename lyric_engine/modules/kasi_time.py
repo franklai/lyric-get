@@ -81,9 +81,9 @@ class KasiTime(LyricBase):
 
         patterns = {
             'artist': u'歌手',
-            'lyricist': u'作詞者',
-            'composer': u'作曲者',
-            'arranger': u'編曲者',
+            'lyricist': u'作詞',
+            'composer': u'作曲',
+            'arranger': u'編曲',
         }
 
         for key in patterns:
@@ -114,7 +114,7 @@ if __name__ == '__main__':
 
 #     url = 'http://www.kasi-time.com/item-67546.html'
     url = test_url
-    url = 'http://www.kasi-time.com/item-65831.html'
+    url = 'http://www.kasi-time.com/item-72875.html'
 
     full = get_lyric(url)
     if not full:
