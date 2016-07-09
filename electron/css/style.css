@@ -1,0 +1,92 @@
+#container {
+	background-color: #FFF;
+	border: 1px solid #CCC;
+	width: 700px;
+	margin: 30px auto;
+	padding: 20px;
+}
+#query_container {
+	position: relative;
+	border: 1px solid #79b7e7;
+	background: #dfeffc;
+	margin-bottom: 20px;
+	padding: 10px;
+}
+#loading_div {
+	display: none;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+#lyric_div {
+	display: none;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+#lyric_div textarea {
+    width: 670px;
+    font-size: 12pt;
+    border: 1px solid #999;
+    padding: 6px;
+}
+#tabs div {
+	font-size: 12pt;
+}
+#tabs dl dt {
+	font-weight: bold;
+}
+#tabs div a:hover {
+	color: #2e6e9e;
+}
+#footer {
+	margin-top: 25px;
+	font-size: 80%;
+	text-align: right;
+}
+html, body, form, fieldset {
+	margin: 0;
+	padding: 0;
+}
+body {
+	background-color: #CEE;
+	font-family: Arial, sans-serif;
+}
+h1 {
+	text-align: center;
+}
+.hr {
+	border-top: 1px solid #999;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+input {
+	font-family: Arial, sans-serif;
+}
+fieldset {
+	position: relative;
+	border: none;
+}
+#url {
+	/*position: relative;*/
+	font-size: 18px;
+	width: 660px;
+	border: 1px solid #999;
+	padding: 8px;
+}
+#btn_submit, #lyric_div input {
+	background-color: #d0e5f5;
+	padding: 3px;
+	border: 1px solid #79b7e7;
+	font-size: 16px;
+	color: #004459
+	font-weight: bold;
+}
+#btn_submit {
+	width: 100px;
+	position: absolute;
+	top: 6px;
+	right: 5px;
+}
+#tabs div ul li {
+	list-style: circle;
+	padding: 3px;
+}

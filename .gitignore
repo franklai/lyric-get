@@ -216,3 +216,7 @@ pip-log.txt
 
 # my note
 _note/*
+
+# for electron
+electron/node_modules/
+electron/dist/

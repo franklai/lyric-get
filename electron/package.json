@@ -1,0 +1,33 @@
+{
+  "name": "lyric_get",
+  "productName": "Lyric Get",
+  "version": "0.1.0",
+  "description": "Desktop client to Lyric Get service",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "build --dir",
+    "dist": "build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franklai/lyric-get.git"
+  },
+  "author": "franklai",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/franklai/lyric-get/issues"
+  },
+  "homepage": "https://github.com/franklai/lyric-get/",
+  "devDependencies": {
+    "electron-prebuilt": "^1.2.0"
+  },
+  "build": {
+  	"appId": "com.blogspot.franklai-lyric-get",
+	"app-category-type": "public.app-category.utilities",
+	"asar": false,
+	"win": {
+		"target": "zip"
+	}
+  }
+}
