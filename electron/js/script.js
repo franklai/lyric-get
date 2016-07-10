@@ -1,3 +1,45 @@
+
+function isClass(v) {
+	return typeof v === 'function' && /^\s*class\s+/.test(v.toString());
+}
+
+function showLyric(lyric) {
+	var count = lyric.split("\n");
+	//alert(tmp.length);
+	//lyric = tmp.join("<br/>");
+
+	//$("#lyric_div > div").html(lyric);
+	$("#lyric_div > textarea").val(lyric);
+	$("#lyric_div > textarea").css("height", (14*count.length)+"pt");
+
+	$("#loading_div").hide();
+	$("#lyric_div").show();
+	$("#btn_submit").removeAttr("disabled");
+}
+
+function errorLyric() {
+	// failed to get lyric
+	$("#loading_div").html('<span style="color: red;">Failed to get lyric. Please contact franklai.</span>');
+	$("#btn_submit").removeAttr("disabled");
+}
+
+function doJQuery(url) {
+	// JSON query
+	$.getJSON(
+		"http://franklai-lyric-get.appspot.com/app",
+		{'url': url},
+		function(data){
+			var lyric = data["lyric"];
+			if (!lyric) {
+				errorLyric();
+				return;
+			}
+
+			showLyric(lyric);
+		}
+	);
+}
+
 $(document).ready(function(){
 	// initialize tab
 	$("#tabs").tabs();
@@ -55,31 +97,26 @@ $(document).ready(function(){
 		$("#loading_div").html("Loading...");
 		$("#loading_div").show();
 
-		// JSON query
-		$.getJSON(
-			"http://franklai-lyric-get.appspot.com/app",
-			{'url': url},
-			function(data){
-				var lyric = data["lyric"];
-				if (!lyric) {
-					// failed to get lyric
-					$("#loading_div").html('<span style="color: red;">Failed to get lyric. Please contact franklai.</span>');
-					$("#btn_submit").removeAttr("disabled");
+		let parser;
+		if (typeof LyricFactory !== 'undefined') {
+			if (isClass(LyricFactory)) {
+				parser = LyricFactory.makeParser(url);
+			}
+		}
+
+		if (parser) {
+			parser.get(url)
+			.then((full) => {
+				if (!full) {
+					console.log(`Failed to get lyric of ${url}`);
 					return;
 				}
-				var count = lyric.split("\n");
-				//alert(tmp.length);
-				//lyric = tmp.join("<br/>");
 
-				//$("#lyric_div > div").html(lyric);
-				$("#lyric_div > textarea").val(lyric);
-				$("#lyric_div > textarea").css("height", (14*count.length)+"pt");
-
-				$("#loading_div").hide();
-				$("#lyric_div").show();
-				$("#btn_submit").removeAttr("disabled");
-			}
-		);
+				showLyric(full);
+			});
+		} else {
+			doJQuery(url);
+		}
 	});
 
 	$("#loading_div").ajaxError(function(event, request, settings){

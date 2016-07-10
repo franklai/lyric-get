@@ -27,7 +27,7 @@ gulp.task('serve', function () {
   gulp.watch('app.js', electron.restart);
 
   // Reload renderer process
-  gulp.watch(['main.js', 'index.html', 'js/script.js'], electron.reload);
+  gulp.watch(['main.js', 'index.html', 'js/script.js', 'js/lyric_engine.js'], electron.reload);
 });
 
 gulp.task('reload:browser', function () {

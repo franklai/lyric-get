@@ -20,6 +20,11 @@
     "url": "https://github.com/franklai/lyric-get/issues"
   },
   "homepage": "https://github.com/franklai/lyric-get/",
+  "dependencies": {
+    "he": "1.1.0",
+    "node-fetch": "1.5.3",
+    "striptags": "2.1.1"
+  },
   "devDependencies": {
     "electron-prebuilt": "^1.2.0",
     "gulp": "3.9.1"
