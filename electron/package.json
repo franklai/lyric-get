@@ -1,7 +1,7 @@
 {
   "name": "lyric_get",
   "productName": "Lyric Get",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Desktop client to Lyric Get service",
   "main": "main.js",
   "scripts": {
