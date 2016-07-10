@@ -5,6 +5,7 @@
   "description": "Desktop client to Lyric Get service",
   "main": "main.js",
   "scripts": {
+    "go": "gulp serve",
     "start": "electron .",
     "pack": "build --dir",
     "dist": "build"
@@ -20,7 +21,8 @@
   },
   "homepage": "https://github.com/franklai/lyric-get/",
   "devDependencies": {
-    "electron-prebuilt": "^1.2.0"
+    "electron-prebuilt": "^1.2.0",
+    "gulp": "3.9.1"
   },
   "build": {
   	"appId": "com.blogspot.franklai-lyric-get",
