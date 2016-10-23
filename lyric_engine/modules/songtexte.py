@@ -46,6 +46,7 @@ class SongTexte(LyricBase):
 
         rawLyric = rawLyric.replace('<br/>', '\n')
         rawLyric = common.unicode2string(rawLyric)
+        rawLyric = common.htmlspecialchars_decode(rawLyric)
         rawLyric = common.strip_tags(rawLyric).strip()
 
         self.lyric = rawLyric
@@ -76,8 +77,6 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     url = test_url
-
-    url = 'http://www.songtexte.com/songtext/bone-thugs-n-harmony-feat-mariah-carey-and-bow-wow/c-town-6ba75a7e.html'
 
     full = get_lyric(url)
     if not full:
