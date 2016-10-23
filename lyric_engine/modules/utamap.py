@@ -62,7 +62,7 @@ class UtaMap(LyricBase):
         ret = True
         html = common.get_url_content(url)
 
-        encoding = 'sjis'
+        encoding = 'euc_jp'
         html = html.decode(encoding, 'ignore')
 
         patterns = {
