@@ -62,7 +62,7 @@ class UtaMap(LyricBase):
         ret = True
         html = common.get_url_content(url)
 
-        encoding = 'euc_jp'
+        encoding = 'sjis'
         html = html.decode(encoding, 'ignore')
 
         patterns = {
@@ -95,6 +95,7 @@ def get_lyric(url):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
+    url = test_url
     url = 'http://www.utamap.com/showkasi.php?surl=k-131226-001'
 
     full = get_lyric(url)
