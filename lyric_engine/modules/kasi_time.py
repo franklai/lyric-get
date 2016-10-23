@@ -95,6 +95,10 @@ class KasiTime(LyricBase):
             value = common.find_string_by_prefix_suffix(info_table, prefix, suffix, False)
             if not value:
                 continue
+            pos = value.find(u'関連リンク:')
+            if pos > 0:
+                value = value[0:pos]
+                    
             value = value.replace('\t', '').replace('\n', '')
             value = common.strip_tags(value).strip()
             value = common.htmlspecialchars_decode(value)
@@ -112,9 +116,8 @@ def get_lyric(url):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
-#     url = 'http://www.kasi-time.com/item-67546.html'
     url = test_url
-    url = 'http://www.kasi-time.com/item-72875.html'
+    url = 'http://www.kasi-time.com/item-73971.html'
 
     full = get_lyric(url)
     if not full:
