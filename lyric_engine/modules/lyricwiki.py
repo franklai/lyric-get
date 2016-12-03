@@ -42,7 +42,7 @@ class LyricWiki(LyricBase):
 
     def find_lyric(self, html):
         prefix = "<div class='lyricbox'>"
-        suffix = '<!--'
+        suffix = "<div class='lyricsbreak'>"
         lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
         if not lyric:
             return None

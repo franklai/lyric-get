@@ -15,16 +15,7 @@ class SongTexteTest(unittest.TestCase):
 
         self.assertEqual(obj.title, u'Begin Again')
         self.assertEqual(obj.artist, u'Taylor Swift')
-        self.assertEqual(len(obj.lyric), 1618)
-
-    def test_url_02(self):
-        url = 'http://www.songtexte.com/songtext/guns-n-roses/sweet-child-o-mine-33d0c849.html'
-        obj = Lyric(url)
-        obj.parse()
-
-        self.assertEqual(obj.title, u"Sweet Child o' Mine")
-        self.assertEqual(obj.artist, u'Guns N’ Roses')
-        self.assertEqual(len(obj.lyric), 1066)
+        self.assertEqual(len(obj.lyric), 1603)
 
     def test_url_03(self):
         url = 'http://www.songtexte.com/songtext/bone-thugs-n-harmony-feat-mariah-carey-and-bow-wow/c-town-6ba75a7e.html'
