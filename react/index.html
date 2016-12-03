@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lyric Get using React and Grommet</title>
+    <link href='http://grommet.io/assets/latest/css/grommet.min.css' rel='stylesheet' type='text/css'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.1/react.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.1/react-dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+    <script src="http://grommet.io/assets/latest/grommet.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+    </div>
+
+    <script type="text/babel">
+      var TimeDisplay = React.createClass({
+        render: function() {
+          return (
+            <div id="text">{this.props.timeText}</div>
+          );
+        }
+      });
+
+
+      var SearchInput = React.createClass({
+        render: function() {
+            return (
+                <input value="" placeholder="paste url and click"></input>
+            );
+        }
+      });
+
+      var LinkList = React.createClass({
+        render: function() {
+            return (
+                <div>
+                <ul>
+                <li>hello</li>
+                </ul>
+                </div>
+            );
+        }
+      });
+
+
+      var App = React.createClass({
+        render: function() {
+            return (
+                <Grommet.App>
+                    <Grommet.Header>
+                        <Grommet.Title>
+                            Lyric Get
+                        </Grommet.Title>
+                    </Grommet.Header>
+                    <Grommet.Section>
+                        <SearchInput />
+                        <LinkList />
+                    </Grommet.Section>
+                </Grommet.App>
+            );
+        }
+      });
+
+      var TestButton = React.createClass({
+        getInitialState: function() {
+          return {timeText: (new Date()).toString()};
+        },
+        handleClick: function(e) {
+          var timestamp = (new Date()).getTime();
+          var rounded = Math.floor(timestamp / 5000);
+          this.setState({timeText: rounded});
+
+          console.log(timestamp, rounded);
+        },
+        handleMouseOver: function(e) {
+          //console.log('over e:', e);
+        },
+        handleWheel: function(e) {
+          console.log('wheel e:', e);
+          console.log('native:', e.nativeEvent);
+        },
+        render: function() {
+            return (
+              <div>
+                <TimeDisplay timeText={this.state.timeText}></TimeDisplay>
+                <button id="btn_test" onWheel={this.handleWheel} onMouseOver={this.handleMouseOver} onClick={this.handleClick}>I am Test Button</button>
+              </div>
+            );
+        }
+      });
+
+      ReactDOM.render(
+        <App/>,
+        document.getElementById('container')
+      );
+
+    </script>
+  </body>
+</html>

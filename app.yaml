@@ -15,6 +15,9 @@ handlers:
 - url: /favicon\.ico
   static_files: lyric_get/favicon.ico
   upload: lyric_get/favicon.ico
+- url: /react
+  static_files: react/index.html
+  upload: react/index.html
 
 - url: .*
   script: main.app
