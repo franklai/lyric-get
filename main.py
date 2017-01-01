@@ -23,9 +23,9 @@ class MainHandler(webapp2.RequestHandler):
         else:
             output = json.dumps({'lyric': 'error!'})
 
-        self.response.headers.add('Access-Control-Allow-Origin', 'http://localhost')
+        self.response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
         self.response.headers.add('Access-Control-Allow-Methods', 'GET,POST')
-        
+
         self.response.write(output)
         
     def get(self):
