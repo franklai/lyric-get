@@ -60,14 +60,15 @@ class UtaMap(LyricBase):
 
     def find_song_info(self, url):
         ret = True
-        html = common.get_url_content(url)
+        raw = common.get_url_content(url)
 
-        encoding = 'sjis'
-        encoding2 = 'euc_jp'
-        html = html.decode(encoding, 'ignore')
+        encoding = 'euc_jp'
+        encoding2 = 'sjis'
+        html = raw.decode(encoding, 'ignore')
 
-        if html.find(u'無料検索') == -1:
-            html = html.decode(encoding2, 'ignore')
+        if html.find(u'うたまっぷ') == -1:
+            # failed to decode, try another encoding
+            html = raw.decode(encoding2, 'ignore')
 
         patterns = {
             'title': 'title',
