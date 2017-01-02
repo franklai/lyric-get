@@ -41,10 +41,15 @@ class SongTexte(LyricBase):
 
     def find_lyric(self, html):
         prefix = '<div id="lyrics">'
-        suffix = '</div>'
+        suffix = '<div class="brightLink translation hidden-print">'
         rawLyric = common.get_string_by_start_end_string(prefix, suffix, html)
 
-        rawLyric = rawLyric.replace('<br/>', '\n')
+        if not rawLyric:
+            # fall back to old finding </div>
+            suffix = '</div>'
+            rawLyric = common.get_string_by_start_end_string(prefix, suffix, html)
+
+        rawLyric = rawLyric.replace('<div id="71M_inreadads"></div>\n<br />\n', '')
         rawLyric = common.unicode2string(rawLyric)
         rawLyric = common.htmlspecialchars_decode(rawLyric)
         rawLyric = common.strip_tags(rawLyric).strip()

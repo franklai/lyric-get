@@ -24,7 +24,7 @@ class SongTexteTest(unittest.TestCase):
 
         self.assertEqual(obj.title, u"C-Town")
         self.assertEqual(obj.artist, u'Bone Thugs-n-Harmony feat. Mariah Carey & Bow Wow')
-        self.assertEqual(len(obj.lyric), 2977)
+        self.assertEqual(len(obj.lyric), 2976)
 
 if __name__ == '__main__':
     unittest.main()
