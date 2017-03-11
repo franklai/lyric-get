@@ -12,7 +12,6 @@ site_class = 'UtaNet'
 site_index = 'uta_net'
 site_keyword = 'uta-net'
 site_url = 'http://www.uta-net.com/'
-# test_url = 'http://www.uta-net.com/user/phplib/view_0.php?ID=17248'
 test_url = 'http://www.uta-net.com/song/138139/'
 test_expect_length = 1089
 
@@ -49,22 +48,25 @@ class UtaNet(LyricBase):
             logging.info('Failed to get id of url [%s]', url)
             return False
 
-        showkasi_pattern = 'http://www.uta-net.com/user/phplib/swf/showkasi.php?ID=%s&WIDTH=530&HEIGHT=810'
+        # http://www.uta-net.com/user/phplib/svg/showkasi.php?ID=17248&WIDTH=560&HEIGHT=756&FONTSIZE=15&t=1489258939
+        showkasi_pattern = 'http://www.uta-net.com/user/phplib/svg/showkasi.php?ID=%s'
         song_url = showkasi_pattern % (song_id, )
         data = common.get_url_content(song_url)
         if not data:
             logging.info('Failed to get content of url [%s]', song_url)
             return False
 
-        prefix = '<\0\0'
-        suffix = '\0'
-        lyric = common.find_string_by_prefix_suffix(data, prefix, suffix, False)
+        prefix = '<svg '
+        suffix = '</svg>'
+        lyric = common.find_string_by_prefix_suffix(data, prefix, suffix, True)
 
         if not lyric:
             logging.error('Failed to get lyric of url [%s]', url)
             return False
 
         lyric = unicode(lyric, 'utf8')
+        lyric = lyric.replace('</text>', '\n')
+        lyric = common.strip_tags(lyric)
         lyric = lyric.strip()
 
         # test for half to full
@@ -78,7 +80,7 @@ class UtaNet(LyricBase):
         ret = True
         html = common.get_url_content(url)
 
-        encoding = 'sjis'
+        encoding = 'utf8'
         html = html.decode(encoding, 'ignore')
 
         patterns = {
@@ -136,10 +138,11 @@ def download_search_result():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
-    download_search_result()
-    exit()
+#     download_search_result()
+#     exit()
 
-    url = 'http://www.uta-net.com/song/181206/'
+#     url = 'http://www.uta-net.com/song/181206/'
+    url = test_url
 
     full = get_lyric(url)
     if not full:
