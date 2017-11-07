@@ -61,6 +61,12 @@ class MetroLyrics(LyricBase):
             'prefix': '<div id="mid-song-discussion"',
             'suffix': '<span class="label">See all</span>\n</a>\n</div>'
         }, {
+            'prefix': '\n<!--WIDGET - RELATED-->',
+            'suffix': '<!-- Second Section -->\n'
+        }, {
+            'prefix': '\n<!--WIDGET - PHOTOS-->',
+            'suffix': '<!-- Third Section -->\n'
+        }, {
             'prefix': '<p class="writers">',
             'suffix': '</sd-lyricbody>'
         }]
@@ -100,6 +106,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     url = test_url
+    url = 'http://www.metrolyrics.com/red-lyrics-taylor-swift.html'
 
     full = get_lyric(url)
     if not full:

@@ -15,7 +15,7 @@ class MetroLyricsTest(unittest.TestCase):
 
         self.assertEqual(obj.title, u'Red')
         self.assertEqual(obj.artist, u'Taylor Swift')
-        self.assertEqual(len(obj.lyric), 1533)
+        self.assertEqual(len(obj.lyric), 1540)
 
     def test_url_02(self):
         url = 'http://www.metrolyrics.com/my-awake-lyrics-late-night-alumni.html'
