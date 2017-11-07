@@ -40,7 +40,7 @@ class MetroLyrics(LyricBase):
         return html
 
     def find_lyric(self, html):
-        prefix = '<div class="lyrics-body">'
+        prefix = '<!-- First Section -->'
         suffix = '</sd-lyricbody>'
         rawLyric = common.get_string_by_start_end_string(prefix, suffix, html)
         if not rawLyric:
