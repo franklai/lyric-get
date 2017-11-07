@@ -11,8 +11,8 @@ from lyric_base import LyricBase
 site_class = 'Evesta'
 site_index = 'evesta'
 site_keyword = 'evesta'
-site_url = 'http://www.evesta.jp/lyric/'
-test_url = 'http://www.evesta.jp/lyric/artists/a10019/lyrics/l65161.html'
+site_url = 'http://lyric.evesta.jp'
+test_url = 'http://lyric.evesta.jp/l7bb423.html'
 
 class Evesta(LyricBase):
     def parse_page(self):
@@ -43,14 +43,14 @@ class Evesta(LyricBase):
 
     def parse_lyric(self, html):
         html = html.replace('\r\n', '')
-        prefix = "<div class='body'><p>"
-        suffix = '</p>'
+        prefix = '<div id="lyricbody">'
+        suffix = '</div>'
         lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
         if not lyric:
             logging.info('Failed to parse lyric from html [%s]', html)
             return False
 
-        lyric = lyric.replace('<br />', '\n')
+        lyric = lyric.replace('<br>', '\n')
         lyric = lyric.strip()
         lyric = common.unicode2string(lyric)
         lyric = common.half2full(lyric)
@@ -60,17 +60,26 @@ class Evesta(LyricBase):
         return True
 
     def parse_song_info(self, html):
-        pattern = u'<title>(.+?) 歌詞 / .*</title>'
-        self.title = common.get_first_group_by_pattern(html, pattern)
+        prefix = '<div id="lyrictitle">'
+        suffix = '</div>'
+        block = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
 
-        pattern = u"<div class='artists'>歌：(.*)　作詞：(.*)　作曲：(.*)</div>"
-        matches = common.get_matches_by_pattern(html, pattern)
-        if not matches:
-            return False
+        patterns = {
+            'title': u'<h1>(.*?) 歌詞</h1>',
+            'artist': u'>歌：(.*?)</p>',
+            'lyricist': u'>作詞：(.*?)</p>',
+            'composer': u'>作曲：(.*?)</p>'
+        }
 
-        self.artist = matches.group(1)
-        self.lyricist = matches.group(2)
-        self.composer = matches.group(3)
+        for key in patterns:
+            pattern = patterns[key]
+
+            value = common.get_first_group_by_pattern(block, pattern)
+            if value:
+                value = common.strip_tags(common.htmlspecialchars_decode(value)).strip()
+                setattr(self, key, value)
+            else:
+                logging.debug('Failed to get %s, pattern: %s' % (key, pattern, ))
 
         return True
 
