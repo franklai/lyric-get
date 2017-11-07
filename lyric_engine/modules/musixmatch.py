@@ -7,6 +7,7 @@ sys.path.append(include_dir)
 import json
 import logging
 import urllib
+import requests
 import common
 from lyric_base import LyricBase
 
@@ -49,12 +50,13 @@ class MusixMatch(LyricBase):
 
     def get_html(self, url):
         url = urllib.quote(url, ':/')
-        data = common.get_url_content(url)
-        if not data:
+        r = requests.get(url, headers={'user-agent': 'LyricGet'})
+        if r.status_code != 200:
             logging.info('Failed to get content of url [%s]', url)
             return False
 
-        html = data.decode('utf-8', 'ignore')
+        r.encoding = 'utf-8'
+        html = r.text
 
         return html
 
