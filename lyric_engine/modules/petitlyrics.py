@@ -10,16 +10,13 @@ import logging
 import urlparse
 import common
 
-import urllib3
-urllib3.disable_warnings()
-
 from lyric_base import LyricBase
 
 site_class = 'PetitLyrics'
 site_index = 'petitlyrics'
 site_keyword = 'petitlyrics'
-site_url = 'http://petitlyrics.com/'
-test_url = 'http://petitlyrics.com/lyrics/914675'
+site_url = 'https://petitlyrics.com/'
+test_url = 'https://petitlyrics.com/lyrics/914675'
 test_expect_length = 1275
 
 '''
@@ -41,15 +38,13 @@ class PetitLyrics(LyricBase):
         if not id:
             logging.error('Failed to get id of url [%s]', url)
             return False
-        
+
         # 2. get html
-        r = self.request_by_url(url)
-        html = r.data
+        html = self.get_content_by_url(url)
 
         if not html:
             logging.info('Failed to get html of url [%s]' % (url))
             return False
-        html = html.decode('utf-8', 'ignore')
 
         # 3. get CSRF token
         token = self.get_csrf_token(html)
@@ -104,7 +99,7 @@ class PetitLyrics(LyricBase):
         if not id:
             return None
 
-        actionUrl = 'http://petitlyrics.com/com/get_lyrics.ajax'
+        actionUrl = 'https://petitlyrics.com/com/get_lyrics.ajax'
         headers = {
             'X-CSRF-Token': token,
             'X-Requested-With': 'XMLHttpRequest'
@@ -124,7 +119,7 @@ class PetitLyrics(LyricBase):
     def get_lyric(self, id, token):
         if not id:
             return None
-        
+
         obj = self.get_lyric_raw_json(id, token)
         if not obj:
             return None
@@ -178,13 +173,48 @@ class PetitLyrics(LyricBase):
         self.composer = common.htmlspecialchars_decode(common.unicode2string(raw_string)).strip()
 
     def get_content_by_url(self, url, payload=None, headers=None):
-        r = self.request_by_url(url, payload, headers)
+        return self.get_content_by_url_by_requests(url, payload, headers)
+        #return self.get_content_by_url_by_urllib3(url, payload, headers)
 
-        return r.data
+    def get_content_by_url_by_requests(self, url, payload=None, headers=None):
+        r = self.request_by_url_requests(url, payload, headers)
+        if not r:
+            return False
+        return r.text
 
-    def request_by_url(self, url, payload=None, headers=None):
+    def get_content_by_url_by_urllib3(self, url, payload=None, headers=None):
+        r = self.request_by_url_urllib3(url, payload, headers)
+        if not r:
+            return False
+        return r.data.decode('utf-8', 'ignore')
+
+    def request_by_url_requests(self, url, payload=None, headers=None):
+        import urllib3
+        urllib3.disable_warnings()
+        import requests
+
+        proxies = {
+            #'http': '192.168.1.34:8001',
+            #'https': '192.168.1.34:8001'
+        }
+
+        if not hasattr(self, 'session'):
+            self.session = requests.Session()
+
+        if payload:
+            r = self.session.post(url, data = payload, headers = headers, proxies=proxies, verify=False)
+        else:
+            r = self.session.get(url, proxies=proxies, verify=False)
+
+        return r
+
+    def request_by_url_urllib3(self, url, payload=None, headers=None):
+        import urllib3
+        urllib3.disable_warnings()
+
         if not hasattr(self, 'http'):
             self.http = urllib3.PoolManager()
+            #self.http = urllib3.ProxyManager('http://192.168.1.34:8001')
 
         if hasattr(self, 'cookie'):
             if not headers:
@@ -204,7 +234,7 @@ class PetitLyrics(LyricBase):
             r = self.http.request_encode_url('GET', url, payload, headers)
 
         logging.debug('== == == == ==')
-        logging.debug('== request to url [%s]' % (url)) 
+        logging.debug('== request to url [%s]' % (url))
 
         cookie = r.getheader('Set-Cookie')
         if cookie:
@@ -222,9 +252,9 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     url = test_url
-    url = 'http://petitlyrics.com/lyrics/1175487'
-    url = 'http://petitlyrics.com/lyrics/1015689'
-    url = 'http://petitlyrics.com/lyrics/34690'
+    url = 'https://petitlyrics.com/lyrics/1175487'
+    url = 'https://petitlyrics.com/lyrics/1015689'
+    url = 'https://petitlyrics.com/lyrics/34690'
 
     full = get_lyric(url)
     if not full:
