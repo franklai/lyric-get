@@ -12,6 +12,14 @@ import common
 
 from lyric_base import LyricBase
 
+try:
+    import requests_toolbelt.adapters.appengine
+    # Use the App Engine Requests adapter. This makes sure that Requests uses
+    # URLFetch.
+    requests_toolbelt.adapters.appengine.monkeypatch()
+except:
+    pass
+
 site_class = 'PetitLyrics'
 site_index = 'petitlyrics'
 site_keyword = 'petitlyrics'
