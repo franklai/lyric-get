@@ -12,7 +12,7 @@ site_class = 'JLyric'
 site_index = 'j_lyric'
 site_keyword = 'j-lyric.net'
 site_url = 'http://j-lyric.net/'
-test_url = 'http://j-lyric.net/artist/a04cc4b/l0322ed.html'
+test_url = 'http://j-lyric.net/artist/a05d1a7/l041d93.html'
 
 class JLyric(LyricBase):
     def parse_page(self):
@@ -36,11 +36,14 @@ class JLyric(LyricBase):
         return True
 
     def find_lyric(self, content):
-        prefix = "<p id='lyricBody'>"
+        prefix = '<p id="Lyric">'
         suffix = "</p>"
         lyric = common.find_string_by_prefix_suffix(content, prefix, suffix, False)
 
-        lyric = lyric.replace('<br />', '')
+        if not lyric:
+            return False
+
+        lyric = lyric.replace('<br>', '\n')
         lyric = common.htmlspecialchars_decode(common.unicode2string(lyric))
         lyric = lyric.strip();
 
@@ -49,21 +52,18 @@ class JLyric(LyricBase):
         return True
 
     def find_song_info(self, content):
-        prefix = "<div id='lyricBlock'>"
-        suffix = '</table>'
+        prefix = '<div class="cap">'
+        suffix = '<p id="Lyric">'
         info_block = common.find_string_by_prefix_suffix(content, prefix, suffix, False)
 
-        prefix = '<h2>'
-        suffix = '</h2>'
-        title = common.find_string_by_prefix_suffix(info_block, prefix, suffix, False)
-
-        self.title = common.htmlspecialchars_decode(common.unicode2string(title))
-
         patterns = {
-            'artist': u'>歌：(.*?)</td>',
-            'lyricist': u'>作詞：(.*?)</td>',
-            'composer': u'>作曲：(.*?)</td>'
+            'title': u'<h2>(.*?)歌詞</h2>',
+            'artist': u'>歌：(.*?)</p>',
+            'lyricist': u'>作詞：(.*?)</p>',
+            'composer': u'>作曲：(.*?)</p>'
         }
+
+        print info_block.encode('utf-8')
 
         for key in patterns:
             pattern = patterns[key]
@@ -87,6 +87,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     url = test_url
+    url = 'http://j-lyric.net/artist/a000673/l000bea.html'    
 
     full = get_lyric(url)
     if not full:

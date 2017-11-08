@@ -17,7 +17,7 @@ class MusicJpTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'miwa')
         self.assertEqual(obj.lyricist, u'miwa')
         self.assertEqual(obj.composer, u'miwa')
-        self.assertEqual(len(obj.lyric), 636)
+        self.assertEqual(len(obj.lyric), 634)
 
     def test_url_02(self):
         url = 'http://music-book.jp/music/Kashi/aaa1pa8u?artistname=%25e8%2597%258d%25e4%25ba%2595%25e3%2582%25a8%25e3%2582%25a4%25e3%2583%25ab&title=INNOCENCE&packageName=INNOCENCE'
@@ -28,7 +28,7 @@ class MusicJpTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'藍井エイル')
         self.assertEqual(obj.lyricist, u'Eir/Ryosuke Shigenaga')
         self.assertEqual(obj.composer, u'Ryosuke Shigenaga')
-        self.assertEqual(len(obj.lyric), 470)
+        self.assertEqual(len(obj.lyric), 467)
 
 if __name__ == '__main__':
     unittest.main()

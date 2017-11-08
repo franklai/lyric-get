@@ -14,7 +14,7 @@ class LyricWikiTest(unittest.TestCase):
         obj.parse()
 
         self.assertEqual(obj.title, u'僕たちが恋をする理由')
-        self.assertEqual(obj.artist, u'坂本真綾 (Maaya Sakamoto)')
+        self.assertEqual(obj.artist, u'Maaya Sakamoto')
         self.assertEqual(len(obj.lyric), 410)
 
     def test_url_02(self):

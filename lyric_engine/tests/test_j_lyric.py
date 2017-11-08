@@ -17,7 +17,7 @@ class JLyricTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'坂本真綾')
         self.assertEqual(obj.lyricist, u'岩里祐穂')
         self.assertEqual(obj.composer, u'菅野よう子')
-        self.assertEqual(len(obj.lyric), 481)
+        self.assertEqual(len(obj.lyric), 447)
 
     def test_url_02(self):
         url = 'http://j-lyric.net/artist/a000673/l000bea.html'
@@ -28,7 +28,7 @@ class JLyricTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'BUMP OF CHICKEN')
         self.assertEqual(obj.lyricist, u'藤原基央')
         self.assertEqual(obj.composer, u'藤原基央')
-        self.assertEqual(len(obj.lyric), 779)
+        self.assertEqual(len(obj.lyric), 734)
 
 if __name__ == '__main__':
     unittest.main()

@@ -11,42 +11,40 @@ from lyric_base import LyricBase
 site_class = 'KashiNavi'
 site_index = 'kashinavi'
 site_keyword = 'kashinavi'
-site_url = 'http://www.kashinavi.com/'
+site_url = 'http://kashinavi.com/'
 test_url = 'http://kashinavi.com/song_view.html?65545'
 
 class KashiNavi(LyricBase):
     def parse_page(self):
         url = self.url
 
-        if not self.find_lyric(url):
+        html = self.get_html(url)
+        if not html:
+            logging.info('Failed to get html of url [%s]', url)
+            return False
+
+        if not self.find_lyric(url, html):
             logging.info('Failed to get lyric of url [%s]', url)
             return False
 
-        if not self.find_song_info(url):
+        if not self.find_song_info(url, html):
             logging.info('Failed to get song info of url [%s]', url)
 
         return True
 
-    def find_lyric(self, url):
-        pattern = '\?([0-9]+)'
+    def get_html(self, url):
+        resp = common.get_url_content(url)
 
-        song_id = common.get_first_group_by_pattern(url, pattern)
-        if not song_id:
-            logging.error('Failed to get id of url [%s]', url)
-            return False
+        encoding = 'sjis'
+        html = resp.decode(encoding, 'ignore')
 
-        kashi_url = 'http://kashinavi.com/s/kashi.php?no=%s' % (song_id, )
-        resp = common.get_url_content(kashi_url)
-        if not resp:
-            logging.error('Failed to get content of url [%s]', kashi_url)
-            return False
+        return html
 
-        text = resp.decode('sjis', 'ignore')
+    def find_lyric(self, url, html):
+        prefix = '<p oncopy="return false;" unselectable="on;">'
+        suffix = '</p>'
 
-        prefix = ";'>"
-        suffix = '")'
-
-        lyric = common.find_string_by_prefix_suffix(text, prefix, suffix, False)
+        lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
         lyric = lyric.replace('<br>', '\n')
         lyric = common.strip_tags(lyric)
         lyric = lyric.strip()
@@ -55,12 +53,8 @@ class KashiNavi(LyricBase):
 
         return True
 
-    def find_song_info(self, url):
+    def find_song_info(self, url, html):
         ret = True
-        resp = common.get_url_content(url)
-
-        encoding = 'sjis'
-        html = resp.decode(encoding, 'ignore')
 
         prefix = '<table border=0 cellpadding=0 cellspacing=5>'
         suffix = '</td></table>'

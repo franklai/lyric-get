@@ -14,8 +14,8 @@ from lyric_base import LyricBase
 site_class = 'UtaTen'
 site_index = 'utaten'
 site_keyword = 'utaten'
-site_url = 'http://utaten.com/'
-test_url = 'http://utaten.com/lyric/%E5%9D%82%E6%9C%AC%E7%9C%9F%E7%B6%BE/%E5%83%95%E3%81%9F%E3%81%A1%E3%81%8C%E6%81%8B%E3%82%92%E3%81%99%E3%82%8B%E7%90%86%E7%94%B1/'
+site_url = 'https://utaten.com/'
+test_url = 'https://utaten.com/lyric/BUMP+OF+CHICKEN/beautiful+glider/'
 
 class UtaTen(LyricBase):
     def parse_page(self):

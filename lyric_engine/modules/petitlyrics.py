@@ -9,7 +9,10 @@ import json
 import logging
 import urlparse
 import common
+
 import urllib3
+urllib3.disable_warnings()
+
 from lyric_base import LyricBase
 
 site_class = 'PetitLyrics'
