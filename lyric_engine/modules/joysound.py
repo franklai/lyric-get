@@ -6,6 +6,7 @@ sys.path.append(include_dir)
 
 import json
 import logging
+import requests
 import common
 from lyric_base import LyricBase
 
@@ -48,20 +49,18 @@ class JoySound(LyricBase):
 
     def get_song_json(self, song_id):
         json_url = 'https://mspxy.joysound.com/Common/Lyric'
-        post_data = 'kind=naviGroupId&selSongNo=%s&interactionFlg=0&apiVer=1.0' % (song_id, )
+        payload = {
+            'kind': 'naviGroupId',
+            'selSongNo': song_id,
+            'interactionFlg': '0',
+            'apiVer': '1.0',
+        }
         headers = {
             'X-JSP-APP-NAME': '0000800'
         }
 
-        json_str = common.get_url_content(json_url, post_data, headers)
-
-        if not json_str:
-            logging.info('Failed to get json from url [%s]', url)
-            return False
-
-        obj = json.loads(json_str)
-
-        return obj
+        r = requests.post(json_url, data = payload, headers = headers)
+        return r.json()
 
     def parse_lyric(self, json_obj):
         if 'lyricList' not in json_obj:

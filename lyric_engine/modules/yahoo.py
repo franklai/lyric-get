@@ -7,6 +7,7 @@ include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'i
 sys.path.append(include_dir)
 
 import logging
+import requests
 import common
 from lyric_base import LyricBase
 
@@ -41,10 +42,12 @@ class Yahoo(LyricBase):
         return True
 
     def get_xml_parameters(self, url):
-        bytes = common.get_url_content(url)
+        r = requests.get(url)
+        r.encoding = 'utf-8'
+        raw = r.text
 
         pattern = "query +: +'([^']+)'"
-        query = common.get_first_group_by_pattern(bytes, pattern)
+        query = common.get_first_group_by_pattern(raw, pattern)
 
         return query
 
@@ -54,11 +57,11 @@ class Yahoo(LyricBase):
             '7vOgnk6xg64IDggn6YEl3IQxmbj1qqkQzTpAx5nGwl9HnfPX3tZksE.oYhEw3zA-', unquote(query)
         )
         
-        bytes = common.get_url_content(xmlpath)
+        r = requests.get(xmlpath)
+        r.encoding = 'utf-8'
+        raw = r.text
 
-        logging.debug(bytes)
-
-        return bytes
+        return raw
 
     def xml_get_name_attribute(self, doc, tagname):
         ret = None
@@ -75,6 +78,7 @@ class Yahoo(LyricBase):
         return ret
 
     def parse_xml(self, xml_str):
+        xml_str = xml_str.encode('utf-8')
         doc = parseString(xml_str)
 
         def get_lyric(doc):
@@ -83,7 +87,6 @@ class Yahoo(LyricBase):
             lyric = lyric.replace('<br>', '\r\n')
 
             return lyric
-
 
         self.lyric = get_lyric(doc)
         self.find_song_info(doc)
