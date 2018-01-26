@@ -17,7 +17,7 @@ class UtaMapTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'ザ・フォーク・クルセダーズ')
         self.assertEqual(obj.lyricist, u'ザ･フォーク･パロディ･ギャング')
         self.assertEqual(obj.composer, u'加藤和彦')
-        self.assertEqual(len(obj.lyric), 536)
+        self.assertEqual(len(obj.lyric), 495)
 
     def test_url_02(self):
         url = 'http://lyrics.gyao.yahoo.co.jp/ly/Y160641/'
@@ -28,7 +28,7 @@ class UtaMapTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'クリス・ハート')
         self.assertEqual(obj.lyricist, u'多胡邦夫')
         self.assertEqual(obj.composer, u'多胡邦夫')
-        self.assertEqual(len(obj.lyric), 376)
+        self.assertEqual(len(obj.lyric), 357)
 
 if __name__ == '__main__':
     unittest.main()

@@ -84,7 +84,7 @@ class Yahoo(LyricBase):
         def get_lyric(doc):
             lyric = self.xml_get_first_child(doc, 'Lyrics')
             lyric = unicode(lyric) 
-            lyric = lyric.replace('<br>', '\r\n')
+            lyric = lyric.replace('<br>', '\n')
 
             return lyric
 
