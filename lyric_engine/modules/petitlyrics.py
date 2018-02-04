@@ -41,6 +41,15 @@ class PetitLyrics(LyricBase):
     def parse_page(self):
         url = self.url
 
+        if not self.get_from_azure(url):
+            logging.info('Failed to get from azure, url [%s]', url)
+            return False
+
+        return True
+
+    def parse_page_local(self):
+        url = self.url
+
         # 1. get song id from url
         id = self.get_song_id(url)
         if not id:
