@@ -52,3 +52,30 @@ class LyricBase:
 
     def parse_page(self):
         return True
+
+    def get_from_azure(self, url):
+        import requests
+        import urllib
+
+        azure_url = 'https://lyric-get-node-test1.azurewebsites.net/json?url=%s' % (
+            urllib.quote(url))
+        r = requests.get(azure_url)
+
+        obj = r.json()
+
+        patterns = {
+            'title': 'title',
+            'artist': 'artist',
+            'lyricist': 'lyricist',
+            'composer': 'composer',
+            'arranger': 'arranger',
+            'lyric': 'lyric',
+        }
+
+        for pattern in patterns:
+            if pattern not in obj:
+                return False
+
+            setattr(self, pattern, obj[pattern])
+
+        return True
