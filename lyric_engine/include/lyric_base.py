@@ -57,7 +57,7 @@ class LyricBase:
         import requests
         import urllib
 
-        azure_url = 'https://lyric-get-node-test1.azurewebsites.net/json?url=%s' % (
+        azure_url = 'https://franks543-lyric-get.azurewebsites.net/json?url=%s' % (
             urllib.quote(url))
         r = requests.get(azure_url)
 
