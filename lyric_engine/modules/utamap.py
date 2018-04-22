@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -13,6 +14,7 @@ site_index = 'utamap'
 site_keyword = 'utamap'
 site_url = 'http://www.utamap.com/'
 test_url = 'http://www.utamap.com/showkasi.php?surl=70380'
+
 
 class UtaMap(LyricBase):
     def parse_page(self):
@@ -78,9 +80,10 @@ class UtaMap(LyricBase):
         }
 
         for key in patterns:
-            key_for_pattern  = patterns[key]
+            key_for_pattern = patterns[key]
 
-            pattern = u'<INPUT type="hidden" name=%s value="([^"]*)">' % (key_for_pattern, )
+            pattern = u'<INPUT type="hidden" name=%s value="([^"]*)">' % (
+                key_for_pattern, )
             value = common.get_first_group_by_pattern(html, pattern)
 
             if not value:
@@ -92,10 +95,12 @@ class UtaMap(LyricBase):
 
         return ret
 
+
 def get_lyric(url):
     obj = UtaMap(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

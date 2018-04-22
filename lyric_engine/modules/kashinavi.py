@@ -108,6 +108,7 @@ def test_case_1():
     assert obj.composer == u'菅野よう子'
     assert len(obj.lyric) == 358
 
+
 def test_case_2():
     url = 'http://kashinavi.com/song_view.html?77597'
     obj = KashiNavi(url)
@@ -118,6 +119,7 @@ def test_case_2():
     assert obj.lyricist == u'Kana Nishino・GIORGIO 13'
     assert obj.composer == u'Giorgio Cancemi'
     assert len(obj.lyric) == 1247
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

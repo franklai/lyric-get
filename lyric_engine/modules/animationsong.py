@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -26,7 +27,7 @@ class AnimationSong(LyricBase):
             return False
 
         html = html.decode('utf-8')
-            
+
         if not self.find_lyric(html):
             logging.info('Failed to get lyric of url [%s]', url)
             return False
@@ -40,7 +41,8 @@ class AnimationSong(LyricBase):
         prefix = u'<h2>歌詞</h2>'
         suffix = '</div>'
 
-        lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
+        lyric = common.find_string_by_prefix_suffix(
+            html, prefix, suffix, False)
 
         if not lyric:
             logging.info('Failed to get lyric div of url [%s]', url)
@@ -76,18 +78,19 @@ class AnimationSong(LyricBase):
         pattern = u'<th>歌手</th><td>(.*?)</td>'
         value = common.get_first_group_by_pattern(info, pattern)
         if value:
-            result.append(u'歌手：%s' % (common.unicode2string(common.strip_tags(value))))
+            result.append(u'歌手：%s' %
+                          (common.unicode2string(common.strip_tags(value))))
 
         pattern = u'<th>制作者</th><td>(.*?)</td>'
         value = common.get_first_group_by_pattern(info, pattern)
         if value:
-            result.append(u'%s' % (common.unicode2string(common.strip_tags(value))))
+            result.append(u'%s' %
+                          (common.unicode2string(common.strip_tags(value))))
 
         if len(result) > 0:
             return '\n'.join(result)
 
         return None
-        
 
     def find_song_info(self, html):
         ret = True
@@ -102,9 +105,9 @@ class AnimationSong(LyricBase):
 
         patterns = {
             'title': u'<h1>([^<]+)</h1>',
-#             'artist': u'<th>歌手</th><td>(.*?)</td>',
-#             'lyricist': u'作詞：(.*?)　',
-#             'composer': u'作曲：(.*?)</td>'
+            #             'artist': u'<th>歌手</th><td>(.*?)</td>',
+            #             'lyricist': u'作詞：(.*?)　',
+            #             'composer': u'作曲：(.*?)</td>'
         }
 
         for key in patterns:
@@ -121,10 +124,12 @@ class AnimationSong(LyricBase):
 
         return ret
 
+
 def get_lyric(url):
     obj = AnimationSong(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

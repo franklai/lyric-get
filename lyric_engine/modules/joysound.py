@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import json
@@ -15,6 +16,7 @@ site_index = 'joysound'
 site_keyword = 'joysound'
 site_url = 'http://joysound.com/'
 test_url = 'https://www.joysound.com/web/search/song/26613'
+
 
 class JoySound(LyricBase):
     def parse_page(self):
@@ -59,7 +61,7 @@ class JoySound(LyricBase):
             'X-JSP-APP-NAME': '0000800'
         }
 
-        r = requests.post(json_url, data = payload, headers = headers)
+        r = requests.post(json_url, data=payload, headers=headers)
         return r.json()
 
     def parse_lyric(self, json_obj):
@@ -97,10 +99,12 @@ class JoySound(LyricBase):
                     setattr(self, key, value)
         return True
 
+
 def get_lyric(url):
     obj = JoySound(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
@@ -112,4 +116,3 @@ if __name__ == '__main__':
         print('Cannot get lyric')
         exit()
     print(full.encode('utf-8', 'ignore'))
-

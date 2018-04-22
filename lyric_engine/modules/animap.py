@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -13,6 +14,7 @@ site_index = 'animap'
 site_keyword = 'animap'
 site_url = 'http://www.animap.jp/'
 test_url = 'http://www.animap.jp/kasi/showkasi.php?surl=dk101202_50'
+
 
 class AniMap(LyricBase):
     def parse_page(self):
@@ -103,10 +105,12 @@ class AniMap(LyricBase):
 
         return ret
 
+
 def get_lyric(url):
     obj = AniMap(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

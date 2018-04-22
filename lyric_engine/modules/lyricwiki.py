@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -15,6 +16,7 @@ site_keyword = 'lyrics.wikia'
 site_url = 'http://lyrics.wikia.com/'
 test_url = 'http://lyrics.wikia.com/Ronan_Keating:When_You_Say_Nothing_At_All'
 
+
 class LyricWiki(LyricBase):
     def parse_page(self):
         url = self.url
@@ -23,7 +25,7 @@ class LyricWiki(LyricBase):
         if not html:
             logging.info('Failed to get content of url [%s]', url)
             return False
-        
+
         if not self.find_lyric(html):
             logging.info('Failed to get lyric of url [%s]', url)
             return False
@@ -43,7 +45,8 @@ class LyricWiki(LyricBase):
     def find_lyric(self, html):
         prefix = "<div class='lyricbox'>"
         suffix = "<div class='lyricsbreak'>"
-        lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
+        lyric = common.find_string_by_prefix_suffix(
+            html, prefix, suffix, False)
         if not lyric:
             return None
 
@@ -65,10 +68,12 @@ class LyricWiki(LyricBase):
 
         return True
 
+
 def get_lyric(url):
     obj = LyricWiki(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

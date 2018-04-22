@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -20,6 +21,7 @@ test_expect_length = 1089
 #
 # former url
 # 'http://www.uta-net.com/user/phplib/view_0.php?ID=17248'
+
 
 class UtaNet(LyricBase):
     def parse_page(self):
@@ -104,10 +106,12 @@ class UtaNet(LyricBase):
 
         return ret
 
+
 def get_lyric(url):
     obj = UtaNet(url)
 
     return obj.get()
+
 
 def download_search_result():
     url = 'http://www.uta-net.com/search/?Aselect=1&Bselect=3&Keyword=KOKIA&sort=6'
@@ -134,6 +138,7 @@ def download_search_result():
         out.write('\n\n=====\n')
 
     out.close()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -13,6 +14,7 @@ site_index = 'evesta'
 site_keyword = 'evesta'
 site_url = 'http://lyric.evesta.jp'
 test_url = 'http://lyric.evesta.jp/l7bb423.html'
+
 
 class Evesta(LyricBase):
     def parse_page(self):
@@ -45,7 +47,8 @@ class Evesta(LyricBase):
         html = html.replace('\r\n', '')
         prefix = '<div id="lyricbody">'
         suffix = '</div>'
-        lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
+        lyric = common.find_string_by_prefix_suffix(
+            html, prefix, suffix, False)
         if not lyric:
             logging.info('Failed to parse lyric from html [%s]', html)
             return False
@@ -62,7 +65,8 @@ class Evesta(LyricBase):
     def parse_song_info(self, html):
         prefix = '<div id="lyrictitle">'
         suffix = '</div>'
-        block = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
+        block = common.find_string_by_prefix_suffix(
+            html, prefix, suffix, False)
 
         patterns = {
             'title': u'<h1>(.*?) 歌詞</h1>',
@@ -76,17 +80,21 @@ class Evesta(LyricBase):
 
             value = common.get_first_group_by_pattern(block, pattern)
             if value:
-                value = common.strip_tags(common.htmlspecialchars_decode(value)).strip()
+                value = common.strip_tags(
+                    common.htmlspecialchars_decode(value)).strip()
                 setattr(self, key, value)
             else:
-                logging.debug('Failed to get %s, pattern: %s' % (key, pattern, ))
+                logging.debug('Failed to get %s, pattern: %s' %
+                              (key, pattern, ))
 
         return True
+
 
 def get_lyric(url):
     obj = Evesta(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

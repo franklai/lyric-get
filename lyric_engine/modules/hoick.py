@@ -28,10 +28,12 @@ class Hoick(LyricBase):
 
         return True
 
+
 def get_lyric(url):
     obj = Hoick(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

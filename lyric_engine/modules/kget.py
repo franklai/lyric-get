@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -14,6 +15,7 @@ site_keyword = 'kget'
 site_url = 'http://www.kget.jp/'
 test_url = 'http://www.kget.jp/lyric/11066/'
 test_expect_length = 1513
+
 
 class KGet(LyricBase):
     def parse_page(self):
@@ -63,7 +65,8 @@ class KGet(LyricBase):
         pattern = '<h1.*?>(.*)</h1>'
         title = common.get_first_group_by_pattern(html, pattern)
         if title:
-            title = common.htmlspecialchars_decode(common.strip_tags(title)).strip()
+            title = common.htmlspecialchars_decode(
+                common.strip_tags(title)).strip()
             self.title = title
         else:
             logging.warning('Failed to parse title of url [%s]', url)
@@ -85,7 +88,8 @@ class KGet(LyricBase):
 
             value = common.get_first_group_by_pattern(info_table, pattern)
             if value:
-                value = common.htmlspecialchars_decode(common.strip_tags(value)).strip()
+                value = common.htmlspecialchars_decode(
+                    common.strip_tags(value)).strip()
                 setattr(self, key, value)
             else:
                 logging.warning('Failed to get %s', key)
@@ -93,10 +97,12 @@ class KGet(LyricBase):
 
         return ret
 
+
 def get_lyric(url):
     obj = KGet(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -14,6 +15,7 @@ site_index = 'j_total'
 site_keyword = 'j-total'
 site_url = 'http://music.j-total.net/'
 test_url = 'http://music.j-total.net/data/026ha/053_Perfume/038.html'
+
 
 class JTotal(LyricBase):
     def parse_page(self):
@@ -93,10 +95,12 @@ class JTotal(LyricBase):
 
         return ret
 
+
 def get_lyric(url):
     obj = JTotal(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

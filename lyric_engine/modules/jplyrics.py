@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -26,7 +27,7 @@ class JpLyrics(LyricBase):
             return False
 
         html = html.decode('utf-8')
-            
+
         if not self.find_lyric(url, html):
             logging.info('Failed to get lyric of url [%s]', url)
             return False
@@ -40,7 +41,8 @@ class JpLyrics(LyricBase):
         prefix = '<div class="divcss5-b">'
         suffix = '</div>'
 
-        lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
+        lyric = common.find_string_by_prefix_suffix(
+            html, prefix, suffix, False)
         if not lyric:
             logging.info('Failed to get lyric div of url [%s]', url)
             return False
@@ -67,10 +69,12 @@ class JpLyrics(LyricBase):
 
         return ret
 
+
 def get_lyric(url):
     obj = JpLyrics(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

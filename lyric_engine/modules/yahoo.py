@@ -3,7 +3,8 @@ import os
 import sys
 from urllib import unquote
 from xml.dom.minidom import parseString
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -16,6 +17,7 @@ site_index = 'yahoo'
 site_keyword = 'yahoo'
 site_url = 'http://lyrics.gyao.yahoo.co.jp/'
 test_url = 'http://lyrics.gyao.yahoo.co.jp/ly/Y152097/'
+
 
 class Yahoo(LyricBase):
     def parse_page(self):
@@ -54,9 +56,10 @@ class Yahoo(LyricBase):
     def get_xml(self, query):
         # http://rio.yahooapis.jp/RioWebService/V2/getLyrics?appid=7vOgnk6xg64IDggn6YEl3IQxmbj1qqkQzTpAx5nGwl9HnfPX3tZksE.oYhEw3zA-&lyrics_id=Y152097&results=1&multi_htmlspecialchars_flag=1
         xmlpath = 'http://rio.yahooapis.jp/RioWebService/V2/getLyrics?appid=%s&%s' % (
-            '7vOgnk6xg64IDggn6YEl3IQxmbj1qqkQzTpAx5nGwl9HnfPX3tZksE.oYhEw3zA-', unquote(query)
+            '7vOgnk6xg64IDggn6YEl3IQxmbj1qqkQzTpAx5nGwl9HnfPX3tZksE.oYhEw3zA-', unquote(
+                query)
         )
-        
+
         r = requests.get(xmlpath)
         r.encoding = 'utf-8'
         raw = r.text
@@ -83,7 +86,7 @@ class Yahoo(LyricBase):
 
         def get_lyric(doc):
             lyric = self.xml_get_first_child(doc, 'Lyrics')
-            lyric = unicode(lyric) 
+            lyric = unicode(lyric)
             lyric = lyric.replace('<br>', '\n')
 
             return lyric
@@ -116,12 +119,13 @@ class Yahoo(LyricBase):
                 setattr(self, key, value)
 
         return ret
-            
+
 
 def get_lyric(url):
     obj = Yahoo(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

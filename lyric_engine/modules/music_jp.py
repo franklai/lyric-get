@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import json
@@ -16,6 +17,7 @@ site_index = 'music_jp'
 site_keyword = 'music-book.jp'
 site_url = 'http://music-book.jp/music/'
 test_url = 'http://music-book.jp/music/Kashi/aaa0k3wa?artistname=%25e5%25ae%2589%25e5%25ae%25a4%25e5%25a5%2588%25e7%25be%258e%25e6%2581%25b5&title=Love%2520Story&packageName=Sit!%2520Stay!%2520Wait!%2520Down!%252fLove%2520Story'
+
 
 class MusicJp(LyricBase):
     def parse_page(self):
@@ -39,7 +41,7 @@ class MusicJp(LyricBase):
 
         if not self.find_song_info(json, url):
             logging.info('Failed to get song info of url [%s]', url)
-            return False 
+            return False
 
         return True
 
@@ -57,8 +59,10 @@ class MusicJp(LyricBase):
 
     def convert_js_to_url(self, js):
         js = js.replace('var data = "', '')
-        js = js.replace('encodeURIComponent(', '').replace(')', '').replace(';', '')
-        js = js.replace('"', '').replace('+', '').replace(' ', '').replace("'", '')
+        js = js.replace('encodeURIComponent(', '').replace(')',
+                                                           '').replace(';', '')
+        js = js.replace('"', '').replace(
+            '+', '').replace(' ', '').replace("'", '')
 
         return js
 
@@ -114,11 +118,14 @@ class MusicJp(LyricBase):
             logging.warn('Failed to get artist from url [%s]' % (url, ))
             return False
 
-        self.title = urllib.unquote(queries['title'][0]).decode('utf-8', 'ignore')
-        self.artist = urllib.unquote(queries['artistname'][0]).decode('utf-8', 'ignore')
+        self.title = urllib.unquote(
+            queries['title'][0]).decode('utf-8', 'ignore')
+        self.artist = urllib.unquote(
+            queries['artistname'][0]).decode('utf-8', 'ignore')
         self.lyricist = json['Writer']
         self.composer = json['Composer']
         return True
+
 
 def get_lyric(url):
     obj = MusicJp(url)

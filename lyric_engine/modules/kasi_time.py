@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -17,6 +18,7 @@ test_expect_length = 1581
 
 # current url format
 # http://www.kasi-time.com/item-67546.html
+
 
 class KasiTime(LyricBase):
     def parse_page(self):
@@ -49,7 +51,8 @@ class KasiTime(LyricBase):
     def find_lyric(self, html):
         prefix = "var lyrics = '"
         suffix = "';"
-        lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
+        lyric = common.find_string_by_prefix_suffix(
+            html, prefix, suffix, False)
         lyric = lyric.replace("<br>", "\n")
         lyric = lyric.replace("&nbsp;", " ")
         lyric = common.htmlspecialchars_decode(lyric)
@@ -92,13 +95,14 @@ class KasiTime(LyricBase):
             prefix = u'<th>%s</th>' % (pattern)
             suffix = '</td>'
 
-            value = common.find_string_by_prefix_suffix(info_table, prefix, suffix, False)
+            value = common.find_string_by_prefix_suffix(
+                info_table, prefix, suffix, False)
             if not value:
                 continue
             pos = value.find(u'関連リンク:')
             if pos > 0:
                 value = value[0:pos]
-                    
+
             value = value.replace('\t', '').replace('\n', '')
             value = common.strip_tags(value).strip()
             value = common.htmlspecialchars_decode(value)
@@ -108,10 +112,12 @@ class KasiTime(LyricBase):
 
         return ret
 
+
 def get_lyric(url):
     obj = KasiTime(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

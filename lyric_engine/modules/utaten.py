@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import base64
@@ -17,13 +18,15 @@ site_keyword = 'utaten'
 site_url = 'https://utaten.com/'
 test_url = 'https://utaten.com/lyric/BUMP+OF+CHICKEN/beautiful+glider/'
 
+
 class UtaTen(LyricBase):
     def parse_page(self):
         url = self.url
 
         r = requests.get(url)
         if r.status_code != 200:
-            logging.info('Cannot get content of url [%s], status code [%d]', url, r.status_code)
+            logging.info(
+                'Cannot get content of url [%s], status code [%d]', url, r.status_code)
             logging.debug('headers: [%s]', r.headers)
             return False
 
@@ -41,7 +44,7 @@ class UtaTen(LyricBase):
 
         if not self.find_song_info(content):
             logging.info('Failed to get song info of url [%s]', url)
-            return False 
+            return False
 
         return True
 
@@ -62,11 +65,11 @@ class UtaTen(LyricBase):
         lyric = lyric.strip()
 
         self.lyric = lyric
-        
+
         return True
 
     def find_song_info(self, content):
-#         content = content.decode('utf-8', 'ignore')
+        #         content = content.decode('utf-8', 'ignore')
 
         pattern = u'<meta property="og:title" content="(.*?)　歌詞【'
         title = common.get_first_group_by_pattern(content, pattern)
@@ -86,7 +89,8 @@ class UtaTen(LyricBase):
 
         for key in prefixes:
             prefix = prefixes[key]
-            value = common.find_string_by_prefix_suffix(content, prefix, suffix, False)
+            value = common.find_string_by_prefix_suffix(
+                content, prefix, suffix, False)
             if value:
                 value = common.strip_tags(value).strip()
                 value = common.htmlspecialchars_decode(value)
@@ -94,10 +98,12 @@ class UtaTen(LyricBase):
 
         return True
 
+
 def get_lyric(url):
     obj = UtaTen(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

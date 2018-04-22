@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import base64
@@ -37,6 +38,8 @@ test_expect_length = 1275
 
     Response
 '''
+
+
 class PetitLyrics(LyricBase):
     def parse_page(self):
         url = self.url
@@ -171,27 +174,31 @@ class PetitLyrics(LyricBase):
 
         logging.debug('find me LYRICIST')
 
-        raw_string = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
+        raw_string = common.find_string_by_prefix_suffix(
+            html, prefix, suffix, False)
         if not raw_string:
             logging.debug('Failed to find lyricist')
             return False
 
-        self.lyricist = common.htmlspecialchars_decode(common.unicode2string(raw_string)).strip()
+        self.lyricist = common.htmlspecialchars_decode(
+            common.unicode2string(raw_string)).strip()
 
     def parse_composer(self, html):
         prefix = '<b>&#20316;&#26354;&#65306;</b>'
         suffix = '\t'
 
-        raw_string = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
+        raw_string = common.find_string_by_prefix_suffix(
+            html, prefix, suffix, False)
         if not raw_string:
             logging.debug('Failed to find composer')
             return False
 
-        self.composer = common.htmlspecialchars_decode(common.unicode2string(raw_string)).strip()
+        self.composer = common.htmlspecialchars_decode(
+            common.unicode2string(raw_string)).strip()
 
     def get_content_by_url(self, url, payload=None, headers=None):
         return self.get_content_by_url_by_requests(url, payload, headers)
-        #return self.get_content_by_url_by_urllib3(url, payload, headers)
+        # return self.get_content_by_url_by_urllib3(url, payload, headers)
 
     def get_content_by_url_by_requests(self, url, payload=None, headers=None):
         r = self.request_by_url_requests(url, payload, headers)
@@ -219,7 +226,8 @@ class PetitLyrics(LyricBase):
             self.session = requests.Session()
 
         if payload:
-            r = self.session.post(url, data = payload, headers = headers, proxies=proxies, verify=False)
+            r = self.session.post(
+                url, data=payload, headers=headers, proxies=proxies, verify=False)
         else:
             r = self.session.get(url, proxies=proxies, verify=False)
 
@@ -236,17 +244,20 @@ class PetitLyrics(LyricBase):
         if hasattr(self, 'cookie'):
             if not headers:
                 headers = {'Cookie': self.cookie}
-                logging.debug('no headers in params, set cookie to %s' % (self.cookie))
+                logging.debug(
+                    'no headers in params, set cookie to %s' % (self.cookie))
             elif not hasattr(headers, 'Cookie'):
                 headers['Cookie'] = self.cookie
-                logging.debug('has headers params, set cookie to %s' % (self.cookie))
+                logging.debug(
+                    'has headers params, set cookie to %s' % (self.cookie))
             else:
                 logging.debug('## cookie in request headers')
         else:
             logging.debug('## no saved cookie')
 
         if payload:
-            r = self.http.request_encode_body('POST', url, payload, headers, encode_multipart=False)
+            r = self.http.request_encode_body(
+                'POST', url, payload, headers, encode_multipart=False)
         else:
             r = self.http.request_encode_url('GET', url, payload, headers)
 
@@ -256,14 +267,17 @@ class PetitLyrics(LyricBase):
         cookie = r.getheader('Set-Cookie')
         if cookie:
             self.cookie = cookie
-            logging.debug('Got Set-Cookie: %s from request to %s' % (cookie, url))
+            logging.debug('Got Set-Cookie: %s from request to %s' %
+                          (cookie, url))
 
         return r
+
 
 def get_lyric(url):
     obj = PetitLyrics(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

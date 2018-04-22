@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import json
@@ -24,6 +25,7 @@ site_index = 'musixmatch'
 site_keyword = 'musixmatch'
 site_url = 'https://www.musixmatch.com/'
 test_url = 'https://www.musixmatch.com/lyrics/坂本真綾/猫背'
+
 
 class MusixMatch(LyricBase):
     def parse_page(self):
@@ -85,7 +87,7 @@ class MusixMatch(LyricBase):
         raw = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
         if not raw:
             return False
-        
+
         obj = json.loads(raw)
         if not obj:
             return False
@@ -112,10 +114,12 @@ class MusixMatch(LyricBase):
 
         return True
 
+
 def get_lyric(url):
     obj = MusixMatch(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

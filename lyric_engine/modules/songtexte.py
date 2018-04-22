@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -13,6 +14,7 @@ site_index = 'songtexte'
 site_keyword = 'songtexte'
 site_url = 'http://www.songtexte.com/'
 test_url = 'http://www.songtexte.com/songtext/taylor-swift/begin-again-63a6de47.html'
+
 
 class SongTexte(LyricBase):
     def parse_page(self):
@@ -47,9 +49,11 @@ class SongTexte(LyricBase):
         if not rawLyric:
             # fall back to old finding </div>
             suffix = '</div>'
-            rawLyric = common.get_string_by_start_end_string(prefix, suffix, html)
+            rawLyric = common.get_string_by_start_end_string(
+                prefix, suffix, html)
 
-        rawLyric = rawLyric.replace('<div id="71M_inreadads"></div>\n<br />\n', '')
+        rawLyric = rawLyric.replace(
+            '<div id="71M_inreadads"></div>\n<br />\n', '')
         rawLyric = common.unicode2string(rawLyric)
         rawLyric = common.htmlspecialchars_decode(rawLyric)
         rawLyric = common.strip_tags(rawLyric).strip()
@@ -73,10 +77,12 @@ class SongTexte(LyricBase):
 
         return ret
 
+
 def get_lyric(url):
     obj = SongTexte(url)
 
     return obj.get()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
