@@ -17,7 +17,7 @@ class JTotalTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'スキマスイッチ')
         self.assertEqual(obj.lyricist, u'常田真太郎・大橋卓弥')
         self.assertEqual(obj.composer, u'常田真太郎・大橋卓弥')
-        self.assertEqual(len(obj.lyric), 1308)
+        self.assertEqual(len(obj.lyric), 1327)
 
     def test_url_02(self):
         url = 'http://music.j-total.net/data/026ha/048_hata_motohiro/010.html'

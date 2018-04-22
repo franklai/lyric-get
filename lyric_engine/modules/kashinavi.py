@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import sys
-include_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'include')
+include_dir = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), '..', 'include')
 sys.path.append(include_dir)
 
 import logging
@@ -13,6 +14,7 @@ site_index = 'kashinavi'
 site_keyword = 'kashinavi'
 site_url = 'http://kashinavi.com/'
 test_url = 'http://kashinavi.com/song_view.html?65545'
+
 
 class KashiNavi(LyricBase):
     def parse_page(self):
@@ -44,7 +46,8 @@ class KashiNavi(LyricBase):
         prefix = '<p oncopy="return false;" unselectable="on;">'
         suffix = '</p>'
 
-        lyric = common.find_string_by_prefix_suffix(html, prefix, suffix, False)
+        lyric = common.find_string_by_prefix_suffix(
+            html, prefix, suffix, False)
         lyric = lyric.replace('<br>', '\n')
         lyric = common.strip_tags(lyric)
         lyric = lyric.strip()
@@ -58,32 +61,63 @@ class KashiNavi(LyricBase):
 
         prefix = '<table border=0 cellpadding=0 cellspacing=5>'
         suffix = '</td></table>'
-        infoString = common.get_string_by_start_end_string(prefix, suffix, html)
+        infoString = common.get_string_by_start_end_string(
+            prefix, suffix, html)
 
         self.title = common.strip_tags(
             common.get_string_by_start_end_string('<td>', '</td>', infoString)
         )
 
         self.artist = common.strip_tags(
-            common.get_string_by_start_end_string('<td><a href=', '</a></td>', infoString)
+            common.get_string_by_start_end_string(
+                '<td><h2><a href=', '</a></h2></td>', infoString)
         )
 
         prefix = '<table border=0 cellpadding=0 cellspacing=0>'
         suffix = '</td></table>'
-        lyricAndMusic = common.get_string_by_start_end_string(prefix, suffix, infoString)
+        lyricAndMusic = common.get_string_by_start_end_string(
+            prefix, suffix, infoString)
 
         pattern = u'作詞　：　(.*)<br>'
-        self.lyricist = common.get_first_group_by_pattern(lyricAndMusic, pattern)
+        self.lyricist = common.get_first_group_by_pattern(
+            lyricAndMusic, pattern)
 
         pattern = u'作曲　：　(.*)</td>'
-        self.composer = common.get_first_group_by_pattern(lyricAndMusic, pattern)
+        self.composer = common.get_first_group_by_pattern(
+            lyricAndMusic, pattern)
 
         return ret
+
 
 def get_lyric(url):
     obj = KashiNavi(url)
 
     return obj.get()
+
+
+def test_case_1():
+    url = 'http://kashinavi.com/song_view.html?65545'
+    obj = KashiNavi(url)
+    obj.parse()
+
+    assert obj.title == u'猫背'
+
+    assert obj.title == u'猫背'
+    assert obj.artist == u'坂本真綾'
+    assert obj.lyricist == u'岩里祐穂'
+    assert obj.composer == u'菅野よう子'
+    assert len(obj.lyric) == 358
+
+def test_case_2():
+    url = 'http://kashinavi.com/song_view.html?77597'
+    obj = KashiNavi(url)
+    obj.parse()
+
+    assert obj.title == u"We Don't Stop"
+    assert obj.artist == u'西野カナ'
+    assert obj.lyricist == u'Kana Nishino・GIORGIO 13'
+    assert obj.composer == u'Giorgio Cancemi'
+    assert len(obj.lyric) == 1247
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
