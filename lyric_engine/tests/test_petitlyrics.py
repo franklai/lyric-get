@@ -9,16 +9,16 @@ from petitlyrics import PetitLyrics as Lyric
 
 class PetitLyricsTest(unittest.TestCase):
     def test_url_01(self):
-        url = 'http://petitlyrics.com/lyrics/34690'
+        url = 'https://petitlyrics.com/lyrics/914421'
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'Tune The Rainbow')
+        self.assertEqual(obj.title, u'猫背')
         self.assertEqual(obj.artist, u'坂本 真綾')
-        self.assertEqual(obj.lyricist, u'岩里 祐穂')
-        self.assertEqual(obj.composer, u'菅野 よう子')
-        self.assertEqual(len(obj.lyric), 554)
-        self.assertEqual(obj.lyric[:22], u'君が流す涙 拭うためだけに 僕はここにいるよ')
+        self.assertEqual(obj.lyricist, u'岩里祐穂')
+        self.assertEqual(obj.composer, u'菅野よう子')
+        self.assertEqual(len(obj.lyric), 410)
+        self.assertEqual(obj.lyric[:6], u'背の高い君は')
 
     def test_url_02(self):
         url = 'http://petitlyrics.com/lyrics/936622'
