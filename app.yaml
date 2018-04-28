@@ -1,29 +1,6 @@
-runtime: python27
-api_version: 1
-threadsafe: true
+runtime: python
+env: flex
+entrypoint: gunicorn -b :$PORT main:app
 
-handlers:
-- url: /
-  static_files: lyric_get/index.html 
-  upload: lyric_get/index.html
-- url: /js
-  static_dir: lyric_get/js
-- url: /css
-  static_dir: lyric_get/css
-- url: /favicon\.ico
-  static_files: lyric_get/favicon.ico
-  upload: lyric_get/favicon.ico
-- url: /react/
-  static_files: react/index.html
-  upload: react/index.html
-- url: /react/static
-  static_dir: react/static
-
-- url: .*
-  script: main.app
-
-libraries:
-- name: webapp2
-  version: "2.5.2"
-- name: ssl
-  version: latest
+runtime_config:
+  python_version: 3
