@@ -1,11 +1,5 @@
-# coding: utf-8
-import os
-import sys
-module_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'modules')
-sys.path.append(module_dir)
-
 import unittest
-from songtexte import SongTexte as Lyric
+from lyric_engine.modules.songtexte import SongTexte as Lyric
 
 class SongTexteTest(unittest.TestCase):
     def test_url_01(self):
@@ -13,8 +7,8 @@ class SongTexteTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'Begin Again')
-        self.assertEqual(obj.artist, u'Taylor Swift')
+        self.assertEqual(obj.title, 'Begin Again')
+        self.assertEqual(obj.artist, 'Taylor Swift')
         self.assertEqual(len(obj.lyric), 1608)
 
     def test_url_03(self):
@@ -22,8 +16,8 @@ class SongTexteTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u"C-Town")
-        self.assertEqual(obj.artist, u'Bone Thugs-n-Harmony feat. Mariah Carey & Bow Wow')
+        self.assertEqual(obj.title, "C-Town")
+        self.assertEqual(obj.artist, 'Bone Thugs-n-Harmony feat. Mariah Carey & Bow Wow')
         self.assertEqual(len(obj.lyric), 2976)
 
 if __name__ == '__main__':

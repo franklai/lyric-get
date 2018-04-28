@@ -1,11 +1,5 @@
-# coding: utf-8
-import os
-import sys
-module_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'modules')
-sys.path.append(module_dir)
-
 import unittest
-from lyricwiki import LyricWiki as Lyric
+from lyric_engine.modules.lyricwiki import LyricWiki as Lyric
 
 class LyricWikiTest(unittest.TestCase):
     def test_url_01(self):
@@ -13,8 +7,8 @@ class LyricWikiTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'僕たちが恋をする理由')
-        self.assertEqual(obj.artist, u'Maaya Sakamoto')
+        self.assertEqual(obj.title, '僕たちが恋をする理由')
+        self.assertEqual(obj.artist, 'Maaya Sakamoto')
         self.assertEqual(len(obj.lyric), 410)
 
     def test_url_02(self):
@@ -22,8 +16,8 @@ class LyricWikiTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'運命のルーレット廻して')
-        self.assertEqual(obj.artist, u'Zard')
+        self.assertEqual(obj.title, '運命のルーレット廻して')
+        self.assertEqual(obj.artist, 'Zard')
         self.assertEqual(len(obj.lyric), 319)
 
 if __name__ == '__main__':

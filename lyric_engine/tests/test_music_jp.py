@@ -1,9 +1,3 @@
-# coding: utf-8
-import os
-import sys
-module_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'modules')
-sys.path.append(module_dir)
-
 import unittest
 from music_jp import MusicJp as Lyric
 
@@ -13,10 +7,10 @@ class MusicJpTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'ヒカリヘ')
-        self.assertEqual(obj.artist, u'miwa')
-        self.assertEqual(obj.lyricist, u'miwa')
-        self.assertEqual(obj.composer, u'miwa')
+        self.assertEqual(obj.title, 'ヒカリヘ')
+        self.assertEqual(obj.artist, 'miwa')
+        self.assertEqual(obj.lyricist, 'miwa')
+        self.assertEqual(obj.composer, 'miwa')
         self.assertEqual(len(obj.lyric), 634)
 
     def test_url_02(self):
@@ -24,10 +18,10 @@ class MusicJpTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'INNOCENCE')
-        self.assertEqual(obj.artist, u'藍井エイル')
-        self.assertEqual(obj.lyricist, u'Eir/Ryosuke Shigenaga')
-        self.assertEqual(obj.composer, u'Ryosuke Shigenaga')
+        self.assertEqual(obj.title, 'INNOCENCE')
+        self.assertEqual(obj.artist, '藍井エイル')
+        self.assertEqual(obj.lyricist, 'Eir/Ryosuke Shigenaga')
+        self.assertEqual(obj.composer, 'Ryosuke Shigenaga')
         self.assertEqual(len(obj.lyric), 467)
 
 if __name__ == '__main__':

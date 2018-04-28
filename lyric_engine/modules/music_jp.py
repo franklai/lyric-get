@@ -1,16 +1,8 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
-import json
 import logging
-import urllib
-import urlparse
-import common
-from lyric_base import LyricBase
+import urllib.request, urllib.parse
+import requests
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'MusicJp'
 site_index = 'music_jp'
@@ -23,9 +15,7 @@ class MusicJp(LyricBase):
     def parse_page(self):
         url = self.url
 
-        logging.debug('bef get_url_content')
-        content = self.get_url_content(url)
-        logging.debug('aft get_url_content')
+        content = common.get_url_content(url)
         if not content:
             logging.info('Failed to get content of url [%s]', url)
             return False
@@ -44,18 +34,6 @@ class MusicJp(LyricBase):
             return False
 
         return True
-
-    def get_url_content(self, url):
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2141.0 Safari/537.36'
-        }
-
-        html = common.get_url_content(url, data=None, headers=headers)
-        if not html:
-            logging.error('Failed to get html of url [%s]' % (url, ))
-            return False
-
-        return html.decode('utf-8', 'ignore')
 
     def convert_js_to_url(self, js):
         js = js.replace('var data = "', '')
@@ -87,12 +65,11 @@ class MusicJp(LyricBase):
         logging.debug('post data: %s' % (post_data, ))
 
         lyric_url = 'http://music-book.jp/music/MusicDetail/GetLyric'
-        raw_json = common.get_url_content(lyric_url, data=post_data)
-        if not raw_json:
-            logging.error('Failed to get json of url [%s]' % (lyric_url, ))
-            return False
-
-        return json.loads(raw_json)
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        r = requests.post(lyric_url, data=post_data, headers=headers)
+        return  r.json()
 
     def find_lyric(self, json):
         lyric = json['Lyrics'].replace('<br />', '\n')
@@ -102,13 +79,13 @@ class MusicJp(LyricBase):
         return True
 
     def find_song_info(self, json, url):
-        result = urlparse.urlparse(url)
+        result = urllib.parse.urlparse(url)
         logging.debug(result)
         if not result.query:
             logging.warn('Failed to get query of url [%s]' % (url, ))
             return False
 
-        queries = urlparse.parse_qs(result.query)
+        queries = urllib.parse.parse_qs(result.query)
         logging.debug(queries)
         if 'artistname' not in queries:
             logging.warn('Failed to get artist from url [%s]' % (url, ))
@@ -118,10 +95,10 @@ class MusicJp(LyricBase):
             logging.warn('Failed to get artist from url [%s]' % (url, ))
             return False
 
-        self.title = urllib.unquote(
-            queries['title'][0]).decode('utf-8', 'ignore')
-        self.artist = urllib.unquote(
-            queries['artistname'][0]).decode('utf-8', 'ignore')
+        self.title = urllib.parse.unquote(
+            queries['title'][0])
+        self.artist = urllib.parse.unquote(
+            queries['artistname'][0])
         self.lyricist = json['Writer']
         self.composer = json['Composer']
         return True
@@ -143,4 +120,4 @@ if __name__ == '__main__':
     if not full:
         print('Failed to get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

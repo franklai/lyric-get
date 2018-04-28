@@ -1,15 +1,7 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
-import json
 import logging
 import requests
-import common
-from lyric_base import LyricBase
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'JoySound'
 site_index = 'joysound'
@@ -115,4 +107,4 @@ if __name__ == '__main__':
     if not full:
         print('Cannot get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

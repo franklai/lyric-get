@@ -1,13 +1,6 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import logging
-import common
-from lyric_base import LyricBase
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'KGet'
 site_index = 'kget'
@@ -35,16 +28,14 @@ class KGet(LyricBase):
         return True
 
     def get_html(self, url):
-        data = common.get_url_content(url)
-        if not data:
+        html = common.get_url_content(url, encoding="utf-8")
+        if not html:
             logging.error('Failed to get content of url [%s]', url)
             return False
 
-        html = data.decode('utf-8', 'ignore')
         return html
 
     def parse_lyric(self, url, html):
-
         prefix = '<div id="lyric-trunk">'
         suffix = '</div>'
         lyric = common.get_string_by_start_end_string(prefix, suffix, html)
@@ -72,28 +63,18 @@ class KGet(LyricBase):
             logging.warning('Failed to parse title of url [%s]', url)
             ret = False
 
+        prefix = '<table class="lyric-data">'
+        suffix = '</table>'
+        info_table = common.find_string_by_prefix_suffix(html, prefix, suffix)
+        info_table = info_table.replace('\n', '')
+
         patterns = {
             'artist': '">([^<]*)</a></span></td></tr>',
             'lyricist': 'td>([^<]*)<br></td></tr><tr>',
             'composer': 'td>([^<]*)<br></td></tr></table>',
         }
 
-        prefix = '<table class="lyric-data">'
-        suffix = '</table>'
-        info_table = common.find_string_by_prefix_suffix(html, prefix, suffix)
-        info_table = info_table.replace('\n', '')
-
-        for key in patterns:
-            pattern = patterns[key]
-
-            value = common.get_first_group_by_pattern(info_table, pattern)
-            if value:
-                value = common.htmlspecialchars_decode(
-                    common.strip_tags(value)).strip()
-                setattr(self, key, value)
-            else:
-                logging.warning('Failed to get %s', key)
-                ret = False
+        self.set_attr(patterns, info_table)
 
         return ret
 
@@ -113,4 +94,4 @@ if __name__ == '__main__':
     if not full:
         print('Cannot get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

@@ -27,7 +27,7 @@ try:
     # test if load from zip (py2exe)
     if hasattr(jibun, '__loader__'):
         loader = jibun.__loader__
-        files = __import__('__init__').__loader__._files.keys()
+        files = list(__import__('__init__').__loader__._files.keys())
         test = re.compile('lyric_engine.modules.[a-z]')
         files = [x for x in files if test.search(x)]
         moduleNames = [filenameToModuleName(x) for x in files]
@@ -102,7 +102,7 @@ def get_test_result(site_index):
     return None
 
 def get_all_index():
-    return site_dict.keys()
+    return list(site_dict.keys())
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
@@ -120,7 +120,7 @@ if __name__ == '__main__':
             out.flush()
             print(string)
 
-        keys = site_dict.keys()
+        keys = list(site_dict.keys())
         keys.sort()
 
         for key in keys:
@@ -139,7 +139,7 @@ if __name__ == '__main__':
                 echo(lyric.encode('utf-8'))
                 string = '\n===== end =====\n\n'
                 echo(string)
-            except Exception, inst:
+            except Exception as inst:
                 string = '***** Caught exception, reason[%s]' % (inst, )
                 echo(string)
 
@@ -154,7 +154,7 @@ if __name__ == '__main__':
             out.flush()
             print(string)
 
-        keys = site_dict.keys()
+        keys = list(site_dict.keys())
         keys.sort()
 
         for key in keys:
@@ -168,7 +168,7 @@ if __name__ == '__main__':
                     else:
                         string = '! Failed, module [%s], obj dump[%s]' % (key, repr(result), )
                 echo(string)
-            except Exception, inst:
+            except Exception as inst:
                 string = '***** Caught exception, reason[%s]' % (inst, )
                 echo(string)
 
@@ -179,10 +179,10 @@ if __name__ == '__main__':
     def getLyric():
         index = 'animationsong'
         url = get_test_url(index)
-        print url
+        print(url)
         engine = Lyric(url)
         lyric = engine.get_lyric()
-        print lyric.encode('utf-8', 'ignore')
+        print(lyric)
 #         print(repr(lyric))
 
     getLyric()

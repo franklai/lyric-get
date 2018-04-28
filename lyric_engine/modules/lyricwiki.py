@@ -1,14 +1,6 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import logging
-import re
-import common
-from lyric_base import LyricBase
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'LyricWiki'
 site_index = 'lyricwiki'
@@ -36,10 +28,7 @@ class LyricWiki(LyricBase):
         return True
 
     def get_lyric_html(self, url):
-        encoding = 'utf8'
-
-        raw = common.get_url_content(url)
-        html = raw.decode(encoding, 'ignore')
+        html = common.get_url_content(url)
         return html
 
     def find_lyric(self, html):
@@ -85,4 +74,4 @@ if __name__ == '__main__':
     if not full:
         print('Failed to get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

@@ -1,13 +1,6 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import logging
-import common
-from lyric_base import LyricBase
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'JLyric'
 site_index = 'j_lyric'
@@ -24,8 +17,6 @@ class JLyric(LyricBase):
         if not content:
             logging.info('Failed to get content of url [%s]', url)
             return False
-
-        content = content.decode('utf-8', 'ignore')
 
         if not self.find_lyric(content):
             logging.info('Failed to get lyric of url [%s]', url)
@@ -61,25 +52,13 @@ class JLyric(LyricBase):
             content, prefix, suffix, False)
 
         patterns = {
-            'title': u'<h2>(.*?)歌詞</h2>',
-            'artist': u'>歌：(.*?)</p>',
-            'lyricist': u'>作詞：(.*?)</p>',
-            'composer': u'>作曲：(.*?)</p>'
+            'title': '<h2>(.*?)歌詞</h2>',
+            'artist': '>歌：(.*?)</p>',
+            'lyricist': '>作詞：(.*?)</p>',
+            'composer': '>作曲：(.*?)</p>'
         }
 
-        print info_block.encode('utf-8')
-
-        for key in patterns:
-            pattern = patterns[key]
-
-            value = common.get_first_group_by_pattern(info_block, pattern)
-            if value:
-                value = common.strip_tags(
-                    common.htmlspecialchars_decode(value)).strip()
-                setattr(self, key, value)
-            else:
-                logging.debug('Failed to get %s, pattern: %s' %
-                              (key, pattern, ))
+        self.set_attr(patterns, info_block)
 
         return True
 
@@ -100,4 +79,4 @@ if __name__ == '__main__':
     if not full:
         print('Failed to get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

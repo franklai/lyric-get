@@ -1,11 +1,5 @@
-# coding: utf-8
-import os
-import sys
-module_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'modules')
-sys.path.append(module_dir)
-
 import unittest
-from kget import KGet as Lyric
+from lyric_engine.modules.kget import KGet as Lyric
 
 class KGetTest(unittest.TestCase):
     def test_url_zutto(self):
@@ -13,10 +7,10 @@ class KGetTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'ずっと feat.HAN-KUN & TEE')
-        self.assertEqual(obj.artist, u'SPICY CHOCOLATE, HAN-KUN, TEE')
-        self.assertEqual(obj.lyricist, u'HAN-KUN, TEE')
-        self.assertEqual(obj.composer, u'DJ CONTROLER, U.M.E.D.Y., WolfJunk')
+        self.assertEqual(obj.title, 'ずっと feat.HAN-KUN & TEE')
+        self.assertEqual(obj.artist, 'SPICY CHOCOLATE, HAN-KUN, TEE')
+        self.assertEqual(obj.lyricist, 'HAN-KUN, TEE')
+        self.assertEqual(obj.composer, 'DJ CONTROLER, U.M.E.D.Y., WolfJunk')
         self.assertEqual(len(obj.lyric), 769)
 
     def test_url_kanjani8(self):
@@ -24,10 +18,10 @@ class KGetTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'ビースト!!')
-        self.assertEqual(obj.artist, u'関ジャニ∞')
-        self.assertEqual(obj.lyricist, u'錦戸亮')
-        self.assertEqual(obj.composer, u'朱鷺羽ソウ')
+        self.assertEqual(obj.title, 'ビースト!!')
+        self.assertEqual(obj.artist, '関ジャニ∞')
+        self.assertEqual(obj.lyricist, '錦戸亮')
+        self.assertEqual(obj.composer, '朱鷺羽ソウ')
         self.assertEqual(len(obj.lyric), 924)
 
     def test_url_maaya(self):
@@ -35,10 +29,10 @@ class KGetTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'tune the rainbow')
-        self.assertEqual(obj.artist, u'坂本真綾')
-        self.assertEqual(obj.lyricist, u'岩里祐穂')
-        self.assertEqual(obj.composer, u'菅野よう子')
+        self.assertEqual(obj.title, 'tune the rainbow')
+        self.assertEqual(obj.artist, '坂本真綾')
+        self.assertEqual(obj.lyricist, '岩里祐穂')
+        self.assertEqual(obj.composer, '菅野よう子')
         self.assertEqual(len(obj.lyric), 520)
 
 if __name__ == '__main__':

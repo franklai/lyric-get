@@ -1,53 +1,44 @@
-# -*- coding: utf8 -*-
-import cookielib
+import html
 import logging
 import re
-import urllib2
 
-# fetch function of google.appengine.api.urlfetch
-# fetch(url, payload=None, method=GET, headers={}, allow_truncated=False)
 
-class URL:
-    def __init__(self, url, data=None, headers=None):
-        if headers is None:
-            headers = {}
-        cj = cookielib.CookieJar()
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+def get_url_content(url, data=None, headers=None, encoding="utf-8"):
+    try:
+        import requests_toolbelt.adapters.appengine
+        # Use the App Engine Requests adapter. This makes sure that Requests uses
+        # URLFetch.
+        requests_toolbelt.adapters.appengine.monkeypatch()
+    except:
+        pass
 
-        req = urllib2.Request(url, data, headers)
-        self.handle = opener.open(req)
+    import requests
 
-    def get_content(self):
-        return self.handle.read()
+    if data:
+        r = requests.post(url, data=data, headers=headers)
+    else:
+        r = requests.get(url, headers=headers)
+    
+    r.encoding = encoding
 
-    def get_info(self):
-        return self.handle.info()
-
-def get_url_content(url, data=None, headers=None):
-    obj = URL(url, data, headers)
-
-    return obj.get_content()
+    return r.text
 
 def half2full(input):
-    import re
-
     ascii = 'a-zA-Z0-9,\'& \!\?'
     pattern = '(?<=[^%s]) | (?=[^%s])' % (ascii, ascii)
 
-    return re.sub(pattern, u'　', input)
+    return re.sub(pattern, '　', input)
 
 def unicode2string(input):
-    import re
-
     def point2string(match_obj):
         if match_obj and match_obj.group(1):
-            return unichr(int(match_obj.group(1)))
+            return chr(int(match_obj.group(1)))
 
     def hex2dec(match_obj):
         if match_obj and match_obj.group(1):
-            return unichr(int('0' + match_obj.group(1), 16))
+            return chr(int('0' + match_obj.group(1), 16))
 
-    input = input.replace('&hellip;', u'…')
+    input = input.replace('&hellip;', '…')
 
     pattern = r'&#x([0-9a-fA-F]+);'
     input = re.sub(pattern, hex2dec, input)
@@ -111,18 +102,8 @@ def find_string_by_prefix_suffix(input, prefix, suffix, including=True):
     return result
 
 
-import htmlentitydefs
-def htmlspecialchars_decode_func(m, defs=htmlentitydefs.entitydefs):
-    try:
-        return defs[m.group(1)]
-    except KeyError:
-        return m.group(0) # use as is
-
 def htmlspecialchars_decode(string):
-    pattern = re.compile("&(\w+?);")
-    if isinstance(string, unicode):
-        return pattern.sub(htmlspecialchars_decode_func, string.encode('utf8')).decode('utf8', 'ignore')
-    return pattern.sub(htmlspecialchars_decode_func, string)
+    return html.unescape(string)
 
 if __name__ == '__main__':
     text = """
@@ -133,8 +114,8 @@ R &amp; B
 &quot;NO&quot;
 &lt;hr&gt;
 """
-    print(unicode2string(text))
+    print((unicode2string(text)))
 
     text = 'I&#039;m so lonely. R &amp; B'
-    print(half2full(htmlspecialchars_decode(text)))
+    print((half2full(htmlspecialchars_decode(text))))
 

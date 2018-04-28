@@ -1,4 +1,5 @@
-# coding: utf-8
+#/usr/bin/env python3
+from utils import common
 
 class LyricBase:
     def __init__(self, url):
@@ -28,13 +29,13 @@ class LyricBase:
             template.append('')
 
         if self.artist:
-            template.append(u'歌手：%s' % (self.artist))
+            template.append('歌手：%s' % (self.artist))
         if self.lyricist:
-            template.append(u'作詞：%s' % (self.lyricist))
+            template.append('作詞：%s' % (self.lyricist))
         if self.composer:
-            template.append(u'作曲：%s' % (self.composer))
+            template.append('作曲：%s' % (self.composer))
         if self.arranger:
-            template.append(u'編曲：%s' % (self.arranger))
+            template.append('編曲：%s' % (self.arranger))
 
         if len(template) > 2:
             template.append('')
@@ -53,12 +54,24 @@ class LyricBase:
     def parse_page(self):
         return True
 
+    def set_attr(self, patterns, text):
+        for key in patterns:
+            pattern = patterns[key]
+            value = common.get_first_group_by_pattern(text, pattern)
+
+            if not value:
+                ret = False
+            else:
+                value = common.htmlspecialchars_decode(value).strip()
+                value = common.strip_tags(value)
+                setattr(self, key, value)
+
     def get_from_azure(self, url):
         import requests
-        import urllib
+        import urllib.request, urllib.parse, urllib.error
 
         azure_url = 'https://franks543-lyric-get.azurewebsites.net/json?url=%s' % (
-            urllib.quote(url))
+            urllib.parse.quote(url))
         r = requests.get(azure_url)
 
         obj = r.json()

@@ -1,16 +1,10 @@
-# -*- coding: utf8 -*-
-import os
-import sys
-from urllib import unquote
+from urllib.parse import unquote
 from xml.dom.minidom import parseString
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
 
 import logging
 import requests
-import common
-from lyric_base import LyricBase
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'Yahoo'
 site_index = 'yahoo'
@@ -86,7 +80,7 @@ class Yahoo(LyricBase):
 
         def get_lyric(doc):
             lyric = self.xml_get_first_child(doc, 'Lyrics')
-            lyric = unicode(lyric)
+            lyric = str(lyric)
             lyric = lyric.replace('<br>', '\n')
 
             return lyric
@@ -136,4 +130,4 @@ if __name__ == '__main__':
     if not full:
         print('Failed to get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

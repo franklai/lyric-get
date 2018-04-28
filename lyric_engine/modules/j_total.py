@@ -1,14 +1,7 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import logging
 import re
-import common
-from lyric_base import LyricBase
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'JTotal'
 site_index = 'j_total'
@@ -36,14 +29,11 @@ class JTotal(LyricBase):
         return True
 
     def get_lyric_html(self, url):
-        encoding = 'sjis'
-
-        raw = common.get_url_content(url)
-        if not raw:
+        html = common.get_url_content(url, encoding="shift_jis")
+        if not html :
             logging.error('Failed to get content of url [%s]', url)
             return False
 
-        html = raw.decode(encoding, 'ignore')
         return html
 
     def find_lyric(self, html):
@@ -78,20 +68,12 @@ class JTotal(LyricBase):
         info = info.replace('\r', '').replace('\n', '')
 
         patterns = {
-            'artist': u'歌：(.*?)/',
-            'lyricist': u'詞：(.*?)/',
-            'composer': u'曲：(.*?)<',
+            'artist': '歌：(.*?)/',
+            'lyricist': '詞：(.*?)/',
+            'composer': '曲：(.*?)<',
         }
 
-        for key in patterns:
-            pattern = patterns[key]
-
-            value = common.get_first_group_by_pattern(info, pattern)
-            if value:
-                setattr(self, key, value)
-            else:
-                logging.info('Failed to get %s from info %s', key, info)
-                return False
+        self.set_attr(patterns, info)
 
         return ret
 
@@ -111,4 +93,4 @@ if __name__ == '__main__':
     if not full:
         print('Cannot get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

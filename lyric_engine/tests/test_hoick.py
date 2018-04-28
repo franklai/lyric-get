@@ -1,11 +1,5 @@
-# coding: utf-8
-import os
-import sys
-module_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'modules')
-sys.path.append(module_dir)
-
 import unittest
-from hoick import Hoick as Lyric
+from lyric_engine.modules.hoick import Hoick as Lyric
 
 class LyricTest(unittest.TestCase):
     def test_url_saved(self):
@@ -13,10 +7,10 @@ class LyricTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'にじ')
+        self.assertEqual(obj.title, 'にじ')
 
-        self.assertEqual(obj.lyricist, u'新沢としひこ')
-        self.assertEqual(obj.composer, u'中川ひろたか')
+        self.assertEqual(obj.lyricist, '新沢としひこ')
+        self.assertEqual(obj.composer, '中川ひろたか')
         self.assertEqual(len(obj.lyric), 509)
 
     def test_url_id(self):
@@ -24,10 +18,10 @@ class LyricTest(unittest.TestCase):
         obj = Lyric(url)
         obj.parse()
 
-        self.assertEqual(obj.title, u'ビーだまビーすけの大冒険')
+        self.assertEqual(obj.title, 'ビーだまビーすけの大冒険')
 
-        self.assertEqual(obj.lyricist, u'佐藤雅彦,内野真澄')
-        self.assertEqual(obj.composer, u'栗原正己')
+        self.assertEqual(obj.lyricist, '佐藤雅彦,内野真澄')
+        self.assertEqual(obj.composer, '栗原正己')
         self.assertEqual(len(obj.lyric), 275)
 
 if __name__ == '__main__':

@@ -1,16 +1,8 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import base64
 import logging
 import re
-import requests
-import common
-from lyric_base import LyricBase
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'UtaTen'
 site_index = 'utaten'
@@ -23,15 +15,7 @@ class UtaTen(LyricBase):
     def parse_page(self):
         url = self.url
 
-        r = requests.get(url)
-        if r.status_code != 200:
-            logging.info(
-                'Cannot get content of url [%s], status code [%d]', url, r.status_code)
-            logging.debug('headers: [%s]', r.headers)
-            return False
-
-        r.encoding = 'utf-8'
-        content = r.text
+        content = common.get_url_content(url)
 
         if not content:
             logging.info('Failed to get lyric of url [%s]', url)
@@ -69,21 +53,19 @@ class UtaTen(LyricBase):
         return True
 
     def find_song_info(self, content):
-        #         content = content.decode('utf-8', 'ignore')
-
-        pattern = u'<meta property="og:title" content="(.*?)　歌詞【'
+        pattern = '<meta property="og:title" content="(.*?)　歌詞【'
         title = common.get_first_group_by_pattern(content, pattern)
         title = common.htmlspecialchars_decode(title)
         self.title = title
 
-        pattern = u'<meta property="og:description" content="(.*?)が歌う'
+        pattern = '<meta property="og:description" content="(.*?)が歌う'
         artist = common.get_first_group_by_pattern(content, pattern)
         artist = common.htmlspecialchars_decode(artist)
         self.artist = artist
 
         prefixes = {
-            'lyricist': u'作詞</dt>',
-            'composer': u'作曲</dt>',
+            'lyricist': '作詞</dt>',
+            'composer': '作曲</dt>',
         }
         suffix = '</dd>'
 
@@ -114,5 +96,4 @@ if __name__ == '__main__':
     if not full:
         print('Failed to get lyric')
         exit()
-#     print(full)
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

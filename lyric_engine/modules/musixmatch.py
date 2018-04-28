@@ -1,24 +1,8 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import json
 import logging
-import urllib
-import requests
-import common
-from lyric_base import LyricBase
-
-try:
-    import requests_toolbelt.adapters.appengine
-    # Use the App Engine Requests adapter. This makes sure that Requests uses
-    # URLFetch.
-    requests_toolbelt.adapters.appengine.monkeypatch()
-except:
-    pass
+import urllib.parse
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'MusixMatch'
 site_index = 'musixmatch'
@@ -59,14 +43,8 @@ class MusixMatch(LyricBase):
         return True
 
     def get_html(self, url):
-        url = urllib.quote(url, ':/')
-        r = requests.get(url, headers={'user-agent': 'LyricGet'})
-        if r.status_code != 200:
-            logging.info('Failed to get content of url [%s]', url)
-            return False
-
-        r.encoding = 'utf-8'
-        html = r.text
+        url = urllib.parse.quote(url, ':/')
+        html = common.get_url_content(url, headers={'user-agent': 'LyricGet'})
 
         return html
 
@@ -131,4 +109,4 @@ if __name__ == '__main__':
     if not full:
         print('Cannot get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

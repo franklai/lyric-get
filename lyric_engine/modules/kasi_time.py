@@ -1,13 +1,6 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import logging
-import common
-from lyric_base import LyricBase
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'KasiTime'
 site_index = 'kasi_time'
@@ -39,12 +32,10 @@ class KasiTime(LyricBase):
         return True
 
     def get_html(self, url):
-        data = common.get_url_content(url)
-        if not data:
+        html = common.get_url_content(url)
+        if not html:
             logging.info('Failed to get content of url [%s]', url)
             return False
-
-        html = data.decode('utf-8', 'ignore')
 
         return html
 
@@ -83,23 +74,23 @@ class KasiTime(LyricBase):
         info_table = common.find_string_by_prefix_suffix(html, prefix, suffix)
 
         patterns = {
-            'artist': u'歌手',
-            'lyricist': u'作詞',
-            'composer': u'作曲',
-            'arranger': u'編曲',
+            'artist': '歌手',
+            'lyricist': '作詞',
+            'composer': '作曲',
+            'arranger': '編曲',
         }
 
         for key in patterns:
             pattern = patterns[key]
 
-            prefix = u'<th>%s</th>' % (pattern)
+            prefix = '<th>%s</th>' % (pattern)
             suffix = '</td>'
 
             value = common.find_string_by_prefix_suffix(
                 info_table, prefix, suffix, False)
             if not value:
                 continue
-            pos = value.find(u'関連リンク:')
+            pos = value.find('関連リンク:')
             if pos > 0:
                 value = value[0:pos]
 
@@ -129,4 +120,4 @@ if __name__ == '__main__':
     if not full:
         print('Cannot get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

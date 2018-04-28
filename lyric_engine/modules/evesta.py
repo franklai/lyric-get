@@ -1,13 +1,7 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import logging
-import common
-from lyric_base import LyricBase
+
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'Evesta'
 site_index = 'evesta'
@@ -39,21 +33,19 @@ class Evesta(LyricBase):
         if not html:
             return False
 
-        html = html.decode('utf-8', 'ignore')
-
         return html
 
     def parse_lyric(self, html):
-        html = html.replace('\r\n', '')
+        html = html.replace("\r\n", "")
         prefix = '<div id="lyricbody">'
-        suffix = '</div>'
+        suffix = "</div>"
         lyric = common.find_string_by_prefix_suffix(
             html, prefix, suffix, False)
         if not lyric:
-            logging.info('Failed to parse lyric from html [%s]', html)
+            logging.info("Failed to parse lyric from html [%s]", html)
             return False
 
-        lyric = lyric.replace('<br>', '\n')
+        lyric = lyric.replace("<br>", "\n")
         lyric = lyric.strip()
         lyric = common.unicode2string(lyric)
         lyric = common.half2full(lyric)
@@ -64,28 +56,18 @@ class Evesta(LyricBase):
 
     def parse_song_info(self, html):
         prefix = '<div id="lyrictitle">'
-        suffix = '</div>'
+        suffix = "</div>"
         block = common.find_string_by_prefix_suffix(
             html, prefix, suffix, False)
 
         patterns = {
-            'title': u'<h1>(.*?) 歌詞</h1>',
-            'artist': u'>歌：(.*?)</p>',
-            'lyricist': u'>作詞：(.*?)</p>',
-            'composer': u'>作曲：(.*?)</p>'
+            "title": r"<h1>(.*?) 歌詞</h1>",
+            "artist": r">歌：(.*?)</p>",
+            "lyricist": r">作詞：(.*?)</p>",
+            "composer": r">作曲：(.*?)</p>"
         }
 
-        for key in patterns:
-            pattern = patterns[key]
-
-            value = common.get_first_group_by_pattern(block, pattern)
-            if value:
-                value = common.strip_tags(
-                    common.htmlspecialchars_decode(value)).strip()
-                setattr(self, key, value)
-            else:
-                logging.debug('Failed to get %s, pattern: %s' %
-                              (key, pattern, ))
+        self.set_attr(patterns, block)
 
         return True
 
@@ -105,4 +87,4 @@ if __name__ == '__main__':
     if not full:
         print('Failed to get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

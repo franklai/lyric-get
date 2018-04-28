@@ -1,13 +1,7 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import logging
-import common
-from lyric_base import LyricBase
+
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'AnimationSong'
 site_index = 'animationsong'
@@ -26,8 +20,6 @@ class AnimationSong(LyricBase):
             logging.info('Failed to get html of url [%s]', url)
             return False
 
-        html = html.decode('utf-8')
-
         if not self.find_lyric(html):
             logging.info('Failed to get lyric of url [%s]', url)
             return False
@@ -38,7 +30,7 @@ class AnimationSong(LyricBase):
         return True
 
     def find_lyric(self, html):
-        prefix = u'<h2>歌詞</h2>'
+        prefix = '<h2>歌詞</h2>'
         suffix = '</div>'
 
         lyric = common.find_string_by_prefix_suffix(
@@ -75,16 +67,16 @@ class AnimationSong(LyricBase):
 
         info = common.to_one_line(info)
 
-        pattern = u'<th>歌手</th><td>(.*?)</td>'
+        pattern = '<th>歌手</th><td>(.*?)</td>'
         value = common.get_first_group_by_pattern(info, pattern)
         if value:
-            result.append(u'歌手：%s' %
+            result.append('歌手：%s' %
                           (common.unicode2string(common.strip_tags(value))))
 
-        pattern = u'<th>制作者</th><td>(.*?)</td>'
+        pattern = '<th>制作者</th><td>(.*?)</td>'
         value = common.get_first_group_by_pattern(info, pattern)
         if value:
-            result.append(u'%s' %
+            result.append('%s' %
                           (common.unicode2string(common.strip_tags(value))))
 
         if len(result) > 0:
@@ -104,7 +96,7 @@ class AnimationSong(LyricBase):
         info = common.to_one_line(info)
 
         patterns = {
-            'title': u'<h1>([^<]+)</h1>',
+            'title': '<h1>([^<]+)</h1>',
             #             'artist': u'<th>歌手</th><td>(.*?)</td>',
             #             'lyricist': u'作詞：(.*?)　',
             #             'composer': u'作曲：(.*?)</td>'
@@ -140,4 +132,4 @@ if __name__ == '__main__':
     if not full:
         print('failed to get full lyric!')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

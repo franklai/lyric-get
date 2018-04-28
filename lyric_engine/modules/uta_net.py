@@ -1,13 +1,6 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import logging
-import common
-from lyric_base import LyricBase
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'UtaNet'
 site_index = 'uta_net'
@@ -66,7 +59,6 @@ class UtaNet(LyricBase):
             logging.error('Failed to get lyric of url [%s]', url)
             return False
 
-        lyric = unicode(lyric, 'utf8')
         lyric = lyric.replace('</text>', '\n')
         lyric = common.strip_tags(lyric)
         lyric = lyric.strip()
@@ -82,27 +74,14 @@ class UtaNet(LyricBase):
         ret = True
         html = common.get_url_content(url)
 
-        encoding = 'utf8'
-        html = html.decode(encoding, 'ignore')
-
         patterns = {
-            'title': u'<h2[^>]*>([^<]+)</h2>',
-            'artist': u'歌手：<h3.*?><a href="/artist/[0-9]+/".*?>(.+?)</a></h3>',
-            'lyricist': u'作詞：<h4.*?>([^<]+)</h4>',
-            'composer': u'作曲：<h4.*?>([^<]+)</h4>'
+            'title': '<h2[^>]*>([^<]+)</h2>',
+            'artist': '歌手：<h3.*?><a href="/artist/[0-9]+/".*?>(.+?)</a></h3>',
+            'lyricist': '作詞：<h4.*?>([^<]+)</h4>',
+            'composer': '作曲：<h4.*?>([^<]+)</h4>'
         }
 
-        for key in patterns:
-            pattern = patterns[key]
-
-            value = common.get_first_group_by_pattern(html, pattern)
-
-            if not value:
-                logging.info('Failed to get %s of url [%s]', key, url)
-                ret = False
-            else:
-                value = common.unicode2string(common.strip_tags(value))
-                setattr(self, key, value)
+        self.set_attr(patterns, html)
 
         return ret
 
@@ -125,13 +104,13 @@ def download_search_result():
     pattern = '<td class="side td1"><a href="([^"]+)">'
 
     import re
-    import urlparse
+    import urllib.parse
     songs = re.findall(pattern, html)
 
     out = open(output, 'wb')
     for song in songs:
-        print song
-        song_url = urlparse.urljoin(site_url, song)
+        print(song)
+        song_url = urllib.parse.urljoin(site_url, song)
         full = get_lyric(song_url)
 
         out.write(full.encode('utf-8'))
@@ -153,4 +132,4 @@ if __name__ == '__main__':
     if not full:
         print('damn !')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

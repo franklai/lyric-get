@@ -1,13 +1,6 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import logging
-import common
-from lyric_base import LyricBase
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'MetroLyrics'
 site_index = 'metrolyrics'
@@ -35,11 +28,7 @@ class MetroLyrics(LyricBase):
         return True
 
     def get_lyric_html(self, url):
-        raw = common.get_url_content(url)
-
-        html = raw.decode('utf-8', 'ignore')
-
-        return html
+        return common.get_url_content(url)
 
     def find_lyric(self, html):
         prefix = '<!-- First Section -->'
@@ -91,12 +80,7 @@ class MetroLyrics(LyricBase):
             'artist': '"musicArtistName":"(.*?)"'
         }
 
-        for key in patterns:
-            pattern = patterns[key]
-
-            value = common.get_first_group_by_pattern(html, pattern)
-            if value:
-                setattr(self, key, value)
+        self.set_attr(patterns, html)
 
         return ret
 
@@ -117,4 +101,4 @@ if __name__ == '__main__':
     if not full:
         print('Failed to get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)

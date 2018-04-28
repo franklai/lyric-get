@@ -1,13 +1,6 @@
-# coding: utf-8
-import os
-import sys
-include_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '..', 'include')
-sys.path.append(include_dir)
-
 import logging
-import common
-from lyric_base import LyricBase
+from utils import common
+from utils.lyric_base import LyricBase
 
 site_class = 'UtaMap'
 site_index = 'utamap'
@@ -51,7 +44,6 @@ class UtaMap(LyricBase):
             return False
 
         lyric = data[pos + len(prefix):]
-        lyric = lyric.decode('utf-8').strip()
 
         # test for half to full
         lyric = common.half2full(lyric)
@@ -62,36 +54,20 @@ class UtaMap(LyricBase):
 
     def find_song_info(self, url):
         ret = True
-        raw = common.get_url_content(url)
+        html = common.get_url_content(url, encoding="euc_jp")
 
-        encoding = 'euc_jp'
-        encoding2 = 'sjis'
-        html = raw.decode(encoding, 'ignore')
-
-        if html.find(u'うたまっぷ') == -1:
-            # failed to decode, try another encoding
-            html = raw.decode(encoding2, 'ignore')
-
-        patterns = {
+        keys = {
             'title': 'title',
             'artist': 'artist',
             'lyricist': 'sakusi',
             'composer': 'sakyoku',
         }
 
-        for key in patterns:
-            key_for_pattern = patterns[key]
+        patterns = {}
+        for attr, key in keys.items():
+            patterns[attr] = '<INPUT type="hidden" name={} value="([^"]*)">'.format(key)
 
-            pattern = u'<INPUT type="hidden" name=%s value="([^"]*)">' % (
-                key_for_pattern, )
-            value = common.get_first_group_by_pattern(html, pattern)
-
-            if not value:
-                logging.info('Failed to get %s of url [%s]', key, url)
-                ret = False
-            else:
-                value = common.htmlspecialchars_decode(value).strip()
-                setattr(self, key, value)
+        self.set_attr(patterns, html)
 
         return ret
 
@@ -112,4 +88,4 @@ if __name__ == '__main__':
     if not full:
         print('Failed to get lyric')
         exit()
-    print(full.encode('utf-8', 'ignore'))
+    print(full)
