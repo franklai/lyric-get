@@ -70,7 +70,7 @@ class KashiNavi(LyricBase):
 
         self.artist = common.strip_tags(
             common.get_string_by_start_end_string(
-                '<td><h2><a href=', '</a></h2></td>', infoString)
+                '<td><h3><a href=', '</a></h3></td>', infoString)
         )
 
         prefix = '<table border=0 cellpadding=0 cellspacing=0>'
