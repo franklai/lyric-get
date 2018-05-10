@@ -17,7 +17,7 @@ class KashiNaviTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'坂本真綾')
         self.assertEqual(obj.lyricist, u'岩里祐穂')
         self.assertEqual(obj.composer, u'菅野よう子')
-        self.assertEqual(len(obj.lyric), 358)
+        self.assertEqual(len(obj.lyric), 374)
 
     def test_url_shiranai(self):
         url = 'http://kashinavi.com/song_view.html?77597'
@@ -28,7 +28,7 @@ class KashiNaviTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'西野カナ')
         self.assertEqual(obj.lyricist, u'Kana Nishino・GIORGIO 13')
         self.assertEqual(obj.composer, u'Giorgio Cancemi')
-        self.assertEqual(len(obj.lyric), 1247)
+        self.assertEqual(len(obj.lyric), 1273)
 
 if __name__ == '__main__':
     unittest.main()
