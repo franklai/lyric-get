@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="shortcut icon" href="favicon.ico" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="google-site-verification" content="EO1Sx-HgQt3fVq-oXvICXG341YlVM5NgIWs9DZy3vjs" />
+	<title>Lyric Get 2018 on App Engine</title>
+	<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w"
+	 crossorigin="anonymous">
+	<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+	<div class="header pure-menu pure-menu-horizontal pure-menu-fixed">
+		<ul class="pure-menu-list">
+			<li class="pure-menu-item pure-menu-selected" data-content-id="main">
+				<a href="#" class="pure-menu-link">Lyric Get</a>
+			</li>
+			<li class="pure-menu-item" data-content-id="examples">
+				<a href="#" class="pure-menu-link">Examples</a>
+			</li>
+			<li class="pure-menu-item" data-content-id="changelog">
+				<a href="#" class="pure-menu-link">Changelog</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="content">
+		<div id="main" class="content-block content-active fill">
+			<div class="do-center">
+				<form id="query_form" class="width-limit">
+					<fieldset>
+						<input type="text" id="url" class="url fill" placeholder="Paste URL HERE..." title="Paste URL HERE..." value="" />
+						<input type="submit" id="submit_btn" class="submit" value="Fetch" />
+					</fieldset>
+				</form>
+				<div id="loading_div" class="lyric-loading-div width-limit">
+					Loading...
+				</div>
+
+				<div id="lyric_div" class="lyric-div width-limit" lang="ja">
+					<input type="button" id="select" value="Select Lyric" />
+					<input type="button" id="copy" value="Copy Lyric" />
+					<span class="copied-msg">Lyric copied to clipboard.</span>
+					<div class="hr"></div>
+					<textarea lang="ja" id="lyric_textarea" class="lyric-textarea"></textarea>
+				</div>
+
+				<div>
+					<a href="./former/">Use former page</a>
+				</div>
+			</div>
+		</div>
+
+		<div id="examples" class="content-block">
+			<dl>
+				<dt>うたまっぷ</dt>
+				<dd>
+					<a href="http://www.utamap.com/showkasi.php?surl=70380" target="_blank">http://www.utamap.com/showkasi.php?surl=70380</a>
+				</dd>
+				<dt>あにまっぷ</dt>
+				<dd>
+					<a href="http://www.animap.jp/kasi/showkasi.php?surl=dk101202_50" target="_blank">http://www.animap.jp/kasi/showkasi.php?surl=dk101202_50</a>
+				</dd>
+				<dt>Uta-Net</dt>
+				<dd>
+					<a href="http://www.uta-net.com/song/17248/" target="_blank">http://www.uta-net.com/song/17248/</a>
+				</dd>
+				<dt>歌詞タイム</dt>
+				<dd>
+					<a href="http://www.kasi-time.com/item-262.html" target="_blank">http://www.kasi-time.com/item-262.html</a>
+				</dd>
+				<dt>歌詞ナビ</dt>
+				<dd>
+					<a href="http://kashinavi.com/song_view.html?65545" target="_blank">http://kashinavi.com/song_view.html?65545</a>
+				</dd>
+				<dt>歌詞GET</dt>
+				<dd>
+					<a href="http://www.kget.jp/lyric/11066/" target="_blank">http://www.kget.jp/lyric/11066/</a>
+				</dd>
+				<dt>GyaO! 歌詞サービス</dt>
+				<dd>
+					<a href="http://lyrics.gyao.yahoo.co.jp/ly/Y152097/" target="_blank">http://lyrics.gyao.yahoo.co.jp/ly/Y152097/</a>
+				</dd>
+				<dt>イベスタ歌詞とる</dt>
+				<dd>
+					<a href="http://www.evesta.jp/lyric/artists/a10019/lyrics/l7811.html" target="_blank">http://www.evesta.jp/lyric/artists/a10019/lyrics/l7811.html</a>
+				</dd>
+				<dt>UtaTen</dt>
+				<dd>
+					<a href="http://utaten.com/lyric/BUMP+OF+CHICKEN/beautiful+glider/" target="_blank">http://utaten.com/lyric/BUMP+OF+CHICKEN/beautiful+glider/</a>
+				</dd>
+				<dt>JOYSOUND.com</dt>
+				<dd>
+					<a href="https://www.joysound.com/web/search/song/26613" target="_blank">https://www.joysound.com/web/search/song/26613</a>
+				</dd>
+				<dt>music.jp</dt>
+				<dd>
+					<a href="http://music-book.jp/music/Kashi/aaa5vfyg?artistname=FLOW&title=COLORS" target="_blank">http://music-book.jp/music/Kashi/aaa5vfyg?...</a>
+				</dd>
+				<dt>petitlyrics</dt>
+				<dd>
+					<a href="https://petitlyrics.com/lyrics/2669211" target="_blank">https://petitlyrics.com/lyrics/2669211</a>
+				</dd>
+				<dt>J-Lyric.net</dt>
+				<dd>
+					<a href="http://j-lyric.net/artist/a002723/l001e83.html" target="_blank">http://j-lyric.net/artist/a002723/l001e83.html</a>
+				</dd>
+				<dt>J-Total Music</dt>
+				<dd>
+					<a href="http://music.j-total.net/data/026ha/053_Perfume/038.html" target="_blank">http://music.j-total.net/data/026ha/053_Perfume/038.html</a>
+				</dd>
+				<dt>アニ歌詞PV</dt>
+				<dd>
+					<a href="http://animationsong.com/archives/1800903.html" target="_blank">http://animationsong.com/archives/1800903.html</a>
+				</dd>
+				<dt>Hoick</dt>
+				<dd>
+					<a href="https://hoick.jp/mdb/detail/9920/%E3%81%AB%E3%81%98" target="_blank">https://hoick.jp/mdb/detail/9920/%E3%81%AB%E3%81%98</a>
+				</dd>
+				<dt>mysound</dt>
+				<dd>
+					<a href="https://mysound.jp/song/65051/" target="_blank">https://mysound.jp/song/65051/</a>
+				</dd>
+
+				<dt>LyricWiki</dt>
+				<dd>
+					<a href="http://lyrics.wikia.com/Ronan_Keating:When_You_Say_Nothing_At_All" target="_blank">http://lyrics.wikia.com/Ronan_Keating:When_You_Say_Nothing_At_All</a>
+				</dd>
+				<dt>metrolyrics</dt>
+				<dd>
+					<a href="http://www.metrolyrics.com/we-belong-together-lyrics-mariah-carey.html" target="_blank">http://www.metrolyrics.com/we-belong-together-lyrics-mariah-carey.html</a>
+				</dd>
+
+				<dt>musixmatch</dt>
+				<dd>
+					<a href="https://www.musixmatch.com/lyrics/Mariah-Carey/We-Belong-Together" target="_blank">https://www.musixmatch.com/lyrics/Mariah-Carey/We-Belong-Together</a>
+				</dd>
+
+			</dl>
+		</div>
+
+		<div id="changelog" class="content-block">
+			<ul>
+				<li>[2018 05-11] Switch 2018 page to default on Google App Engine</li>
+			</ul>
+		</div>
+
+		<div class="footer">
+			<div class="line-item">If you have problems to get lyric.</div>
+			<div class="line-item">
+				Please report issue on
+				<a href="https://github.com/franklai/lyric-get-js/issues" target="_blank">lyric-get-js Issues</a>, or contact
+				<a href="https://franks543.blogspot.com/p/lyric-get.html" target="_blank">franklai</a>.
+			</div>
+		</div>
+	</div>
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-879036-3"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { dataLayer.push(arguments); }
+		gtag('js', new Date());
+
+		gtag('config', 'UA-879036-3');
+	</script>
+
+	<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,fetch,Element.prototype.dataset"></script>
+	<script type="text/javascript" src="js/script.js"></script>
+</body>
+
+</html>

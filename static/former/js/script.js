@@ -57,7 +57,7 @@ $(document).ready(function(){
 
 		// JSON query
 		$.getJSON(
-			"app",
+			"/app",
 			{'url': url},
 			function(data){
 				var lyric = data["lyric"];
