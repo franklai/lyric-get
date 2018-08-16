@@ -62,14 +62,7 @@ class Lyric:
         if not handler:
             return 'This site is not support yet.'
 
-        try:
-            lyric = handler(self.url)
-        except IOError:
-            raise
-        except TypeError:
-            raise
-        except IndexError:
-            raise
+        lyric = handler(self.url)
 
         return lyric
 

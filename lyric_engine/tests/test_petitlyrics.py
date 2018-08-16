@@ -17,7 +17,7 @@ class PetitLyricsTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'坂本 真綾')
         self.assertEqual(obj.lyricist, u'岩里祐穂')
         self.assertEqual(obj.composer, u'菅野よう子')
-        self.assertEqual(len(obj.lyric), 410)
+        self.assertEqual(len(obj.lyric), 366)
         self.assertEqual(obj.lyric[:6], u'背の高い君は')
 
     def test_url_02(self):
@@ -29,7 +29,7 @@ class PetitLyricsTest(unittest.TestCase):
         self.assertEqual(obj.artist, u'SEKAI NO OWARI')
         self.assertEqual(obj.lyricist, u'Saori/Fukase')
         self.assertEqual(obj.composer, u'Fukase')
-        self.assertEqual(len(obj.lyric), 612)
+        self.assertEqual(len(obj.lyric), 574)
         self.assertEqual(obj.lyric[:17], u'空は青く澄み渡り 海を目指して歩く')
 
 if __name__ == '__main__':

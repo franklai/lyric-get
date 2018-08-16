@@ -65,12 +65,12 @@ class KashiNavi(LyricBase):
             prefix, suffix, html)
 
         self.title = common.strip_tags(
-            common.get_string_by_start_end_string('<td>', '</td>', infoString)
+            common.get_string_by_start_end_string('<h2>', '</h2>', infoString)
         )
 
         self.artist = common.strip_tags(
             common.get_string_by_start_end_string(
-                '<td><h3><a href=', '</a></h3></td>', infoString)
+                '<h3><a href=', '</a></h3></td>', infoString)
         )
 
         prefix = '<table border=0 cellpadding=0 cellspacing=0>'
