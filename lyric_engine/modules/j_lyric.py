@@ -67,8 +67,6 @@ class JLyric(LyricBase):
             'composer': u'>作曲：(.*?)</p>'
         }
 
-        print info_block.encode('utf-8')
-
         for key in patterns:
             pattern = patterns[key]
 

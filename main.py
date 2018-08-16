@@ -1,7 +1,19 @@
 #!/usr/bin/env python
 import json
-import lyric_engine
+import logging
+
+from raven import Client
+from raven.conf import setup_logging
+from raven.handlers.logging import SentryHandler
 import webapp2
+
+import lyric_engine
+
+
+client = Client('https://841e64cb97c948bd98d7a85ed1e4862f:ac524529e2ea4be09b424ebfbe9cfe5e@sentry.io/1244452')
+handler = SentryHandler(client)
+handler.setLevel(logging.WARNING)
+setup_logging(handler)
 
 class MainHandler(webapp2.RequestHandler):
     def handler(self):
@@ -12,14 +24,17 @@ class MainHandler(webapp2.RequestHandler):
                 engine = lyric_engine.Lyric(url)
                 lyric = engine.get_lyric()
                 output = json.dumps({'lyric': lyric})
+                if not lyric:
+                    client.captureMessage('lyric content is empty', {'url': url})
             except IOError:
                 output = json.dumps({'lyric': 'IO error!'})
+                client.captureException()
             except TypeError:
-                output = json.dumps({'lyric': 'Type error!'})
+                output = json.dumps({'lyric': 'aType error!'})
+                client.captureException()
             except IndexError:
                 output = json.dumps({'lyric': 'Index error!'})
-            except StandardError:
-                output = json.dumps({'lyric': 'Standard Error!'})
+                client.captureException()
         else:
             output = json.dumps({'lyric': 'error!'})
 
