@@ -15,7 +15,7 @@ class SongTexteTest(unittest.TestCase):
 
         self.assertEqual(obj.title, u'Begin Again')
         self.assertEqual(obj.artist, u'Taylor Swift')
-        self.assertEqual(len(obj.lyric), 1615)
+        self.assertEqual(len(obj.lyric), 1620)
 
     def test_url_03(self):
         url = 'http://www.songtexte.com/songtext/bone-thugs-n-harmony-feat-mariah-carey-and-bow-wow/c-town-6ba75a7e.html'

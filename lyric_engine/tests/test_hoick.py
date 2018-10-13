@@ -17,7 +17,7 @@ class LyricTest(unittest.TestCase):
 
         self.assertEqual(obj.lyricist, u'新沢としひこ')
         self.assertEqual(obj.composer, u'中川ひろたか')
-        self.assertEqual(len(obj.lyric), 509)
+        self.assertEqual(len(obj.lyric), 1922)
 
     def test_url_id(self):
         url = 'http://hoick.jp/mdb/detail/19471/%E3%83%93%E3%83%BC%E3%81%A0%E3%81%BE%E3%83%93%E3%83%BC%E3%81%99%E3%81%91%E3%81%AE%E5%A4%A7%E5%86%92%E9%99%BA'
