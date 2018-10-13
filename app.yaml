@@ -3,13 +3,13 @@ api_version: 1
 threadsafe: true
 
 handlers:
-- url: /
-  static_files: static/index.html
-  upload: static/index.html
-- url: /js
-  static_dir: static/js
-- url: /css
-  static_dir: static/css
+- url: /2018/
+  static_files: static/2018/index.html
+  upload: static/2018/index.html
+- url: /2018/js
+  static_dir: static/2018/js
+- url: /2018/css
+  static_dir: static/2018/css
 - url: /favicon\.ico
   static_files: static/favicon.ico
   upload: static/favicon.ico

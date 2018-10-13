@@ -114,7 +114,7 @@
   });
 
   var doAjaxQuery = function (val) {
-    var url = 'app?url=' + encodeURIComponent(val);
+    var url = '/app?url=' + encodeURIComponent(val);
 
     fetch(url)
       .then(function (resp) {

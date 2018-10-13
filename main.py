@@ -52,10 +52,10 @@ class MainHandler(webapp2.RequestHandler):
 
 class NotFound(webapp2.RequestHandler):
     def get(self):
-        self.redirect('http://franks543.blogspot.com/')
+        self.redirect('https://franks543-lyric-get.azurewebsites.net/')
 
     def post(self):
-        self.redirect('http://franks543.blogspot.com/')
+        self.redirect('https://franks543.blogspot.com/')
 
 app = webapp2.WSGIApplication([
     ('/app', MainHandler),
