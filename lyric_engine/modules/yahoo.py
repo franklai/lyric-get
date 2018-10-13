@@ -15,108 +15,72 @@ from lyric_base import LyricBase
 site_class = 'Yahoo'
 site_index = 'yahoo'
 site_keyword = 'yahoo'
-site_url = 'http://lyrics.gyao.yahoo.co.jp/'
-test_url = 'http://lyrics.gyao.yahoo.co.jp/ly/Y152097/'
+site_url = 'https://gyao.yahoo.co.jp/lyrics/'
+test_url = 'https://gyao.yahoo.co.jp/lyrics/Y152097'
 
 
 class Yahoo(LyricBase):
     def parse_page(self):
         url = self.url
 
-        query = self.get_xml_parameters(url)
-        if not query:
-            logging.info('Failed to get query of url [%s]', url)
+        html = self.get_html(url)
+        if not html:
+            logging.info('Failed to get html of url [%s]', url)
             return False
 
-        logging.debug('XML parameters, query[%s]', query)
-
-        # 3. get xml
-        xml_str = self.get_xml(query)
-        if not xml_str:
-            logging.info('Failed to get xml of url [%s]', url)
+        if not self.find_lyric(url, html):
+            logging.info('Failed to get lyric of url [%s]', url)
             return False
 
-        # 4. parse xml
-        if not self.parse_xml(xml_str):
-            logging.info('Failed to parse xml of url [%s]', url)
-            return False
+        if not self.find_song_info(url, html):
+            logging.info('Failed to get song info of url [%s]', url)
 
         return True
 
-    def get_xml_parameters(self, url):
-        r = requests.get(url)
-        r.encoding = 'utf-8'
-        raw = r.text
+    def get_html(self, url):
+        resp = common.get_url_content(url)
 
-        pattern = "query +: +'([^']+)'"
-        query = common.get_first_group_by_pattern(raw, pattern)
+        encoding = 'utf-8'
+        html = resp.decode(encoding, 'ignore')
 
-        return query
+        return html
 
-    def get_xml(self, query):
-        # http://rio.yahooapis.jp/RioWebService/V2/getLyrics?appid=7vOgnk6xg64IDggn6YEl3IQxmbj1qqkQzTpAx5nGwl9HnfPX3tZksE.oYhEw3zA-&lyrics_id=Y152097&results=1&multi_htmlspecialchars_flag=1
-        xmlpath = 'http://rio.yahooapis.jp/RioWebService/V2/getLyrics?appid=%s&%s' % (
-            '7vOgnk6xg64IDggn6YEl3IQxmbj1qqkQzTpAx5nGwl9HnfPX3tZksE.oYhEw3zA-', unquote(
-                query)
-        )
+    def find_lyric(self, url, html):
+        pattern = '<div class="lyrics-texts">(.+?)</div>'
 
-        r = requests.get(xmlpath)
-        r.encoding = 'utf-8'
-        raw = r.text
+        lyric = common.get_first_group_by_pattern(html, pattern)
+        lyric = lyric.replace('<br>', '\n')
+        lyric = lyric.replace('</p>', '\n')
+        lyric = common.strip_tags(lyric)
+        lyric = lyric.strip()
 
-        return raw
-
-    def xml_get_name_attribute(self, doc, tagname):
-        ret = None
-        elements = doc.getElementsByTagName(tagname)
-        if elements.length == 1:
-            ret = elements.item(0).getAttribute('name')
-        return ret
-
-    def xml_get_first_child(self, doc, tagname):
-        ret = None
-        elements = doc.getElementsByTagName(tagname)
-        if elements.length == 1:
-            ret = elements.item(0).firstChild.nodeValue
-        return ret
-
-    def parse_xml(self, xml_str):
-        xml_str = xml_str.encode('utf-8')
-        doc = parseString(xml_str)
-
-        def get_lyric(doc):
-            lyric = self.xml_get_first_child(doc, 'Lyrics')
-            lyric = unicode(lyric)
-            lyric = lyric.replace('<br>', '\n')
-
-            return lyric
-
-        self.lyric = get_lyric(doc)
-        self.find_song_info(doc)
+        self.lyric = lyric
 
         return True
 
-    def find_song_info(self, doc):
+    def find_song_info(self, url, html):
         ret = True
 
+        prefix = '<h1'
+        suffix = '</dl>'
+
+        info = common.get_string_by_start_end_string(prefix, suffix, html)
+
         patterns = {
-            'title': 'Title',
-            'artist': 'ArtistName',
-            'lyricist': 'WriterName',
-            'composer': 'ComposerName',
+            'title': '<h1 class="lyrics-title">(.+)</h1>',
+            'artist': '>([^>]+)</a></h2>',
+            'lyricist': u'作詞</dt><dd[^>]*>(.+?)</dd>',
+            'composer': u'作曲</dt><dd.*?>(.+?)</dd>',
         }
 
-        for key in patterns:
-            tag = patterns[key]
-
-            value = self.xml_get_first_child(doc, tag)
-
-            if not value:
+        for key, pattern in patterns.iteritems():
+            value = common.get_first_group_by_pattern(info, pattern)
+            
+            if value:
+                setattr(self, key, value)
+            else:
                 logging.info('Failed to get %s of url [%s]', key, url)
                 ret = False
-            else:
-                value = common.htmlspecialchars_decode(value).strip()
-                setattr(self, key, value)
 
         return ret
 

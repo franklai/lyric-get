@@ -7,7 +7,7 @@ sys.path.append(module_dir)
 import unittest
 from yahoo import Yahoo as Lyric
 
-class UtaMapTest(unittest.TestCase):
+class YahooTest(unittest.TestCase):
     def test_url_one_more(self):
         url = 'http://lyrics.gyao.yahoo.co.jp/ly/Y004402/'
         obj = Lyric(url)
