@@ -12,8 +12,8 @@ from lyric_base import LyricBase
 site_class = 'KashiNavi'
 site_index = 'kashinavi'
 site_keyword = 'kashinavi'
-site_url = 'http://kashinavi.com/'
-test_url = 'http://kashinavi.com/song_view.html?65545'
+site_url = 'https://kashinavi.com/'
+test_url = 'https://kashinavi.com/song_view.html?65545'
 
 
 class KashiNavi(LyricBase):
@@ -43,11 +43,9 @@ class KashiNavi(LyricBase):
         return html
 
     def find_lyric(self, url, html):
-        prefix = '<p oncopy="return false;" unselectable="on;">'
-        suffix = '</p>'
+        pattern = 'unselectable="on;">(.*?)</p>'
 
-        lyric = common.find_string_by_prefix_suffix(
-            html, prefix, suffix, False)
+        lyric = common.get_first_group_by_pattern(html, pattern)
         lyric = lyric.replace('<br>', '\n')
         lyric = common.strip_tags(lyric)
         lyric = lyric.strip()
@@ -64,13 +62,14 @@ class KashiNavi(LyricBase):
         infoString = common.get_string_by_start_end_string(
             prefix, suffix, html)
 
+        title_pattern = u'<td><h.>(.+?).♪'
         self.title = common.strip_tags(
-            common.get_string_by_start_end_string('<h2>', '</h2>', infoString)
+            common.get_first_group_by_pattern(infoString, title_pattern)
         )
 
+        artist_pattern = u'♪.(.+?)</a>'        
         self.artist = common.strip_tags(
-            common.get_string_by_start_end_string(
-                '<h3><a href=', '</a></h3></td>', infoString)
+            common.get_first_group_by_pattern(infoString, artist_pattern)
         )
 
         prefix = '<table border=0 cellpadding=0 cellspacing=0>'
